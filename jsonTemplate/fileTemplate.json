@@ -1,0 +1,60 @@
+"fileFormat":{
+    ".ext": str; // epxl: '.obj'
+    "version": str; // exp: '1.2.3'
+    "backwardCompatible" : bool; // {True, False}
+    "organizedBy": enum; // {section, tag}
+    "header": str;
+    "footer": str;
+    "section":{
+        "pattern": str;
+        "tag": str;
+        "options":[
+            str, str, str
+        ]; //expl: ['vertices', 'faces', 'normals', 'texture', 'colors', 'shaders', ..etc]
+    }
+    "comment":{
+        "pattern": str; //expl : tag_text
+        "tag": str; //expl: '#'
+    }
+    "vertex":{
+        "pattern": str; //expl: 'tag___x__y__z'
+        "tag": str; //expl: 'v'
+        "valueType": enum; // {double, float}
+        "defaultVal": value; // will be cast to the valueType above
+    }
+    "face":{
+        "pattern": str; //expl: 'tag___vID1__vID2__vID3'
+        "tag": str; //expl: 'f'
+        "axisConvention": enum; // {'RightHand', 'LeftHand'}
+    }
+    "vertexNormal":{
+        "pattern": str;
+        "tag": str;
+        "valueType": enum; // {'double', 'float'}
+        "defaultVal": value;
+    }
+    "vertexColor":{
+        "pattern": str;
+        "tag": str;
+        "valueType": enum; // {char, float}
+        "defaultVal": value;
+    }
+    "textureCoord":{
+        "pattern": str;
+        "tag": str;
+        "valueType": enum; // {double, float}
+        "defaultVal": value;
+    }
+    "vertexShader":{
+        "version": str;
+        "sourceCode": str;
+    }
+    "geometryShader":{
+        "version": str;
+        "sourceCode": str;
+    }
+    "fragmentShader":{
+        "version": str;
+        "sourceCode": str;
+    }
+}

@@ -1,0 +1,5 @@
+﻿  Converter.cpp
+c:\users\nadir\source\shapr3d\3dconverter\converter.h(11): error C2653: 'conv': is not a class or namespace name
+c:\users\nadir\source\shapr3d\3dconverter\converter.h(11): error C2079: 'Converter' uses undefined class 'conv'
+  Mesh3D.cpp
+  Generating Code...
