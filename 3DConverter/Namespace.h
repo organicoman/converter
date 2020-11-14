@@ -5,18 +5,26 @@
 //---------STL---------
 #include <array>
 #include <cstdint>
+#include <iostream>
 
 //---------------------
 
-//#include "../thirdParty/json.hpp"
+#include "../packages/nlohmann.json.3.9.1/build/native/include/nlohmann/json.hpp"
 
-//using json = nlohmann::json;
+using json = nlohmann::json;
 
-class json {}; // FIX ME: to be replaced by 'nlohmann::json'
+
 
 namespace conv
 {
 	enum shader_t {VERTEX_SHD, GEOMETRY_SHD, FRAGMENT_SD};
+
+	constexpr auto vertex = u8"vertex";
+	constexpr auto normal = u8"vertexNormal";
+	constexpr auto face = u8"face";
+	constexpr auto textCoord = u8"textureCoord";
+	constexpr auto vertColor = u8"vertexColor";
+
 	
 	template<typename T = double> using Matrix = std::array<std::array<T, 3>, 3>;
 	using Matrixf = Matrix<float>;

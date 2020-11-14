@@ -1,60 +1,66 @@
-"fileFormat":{
-    ".ext": str; // epxl: '.obj'
-    "version": str; // exp: '1.2.3'
-    "backwardCompatible" : bool; // {True, False}
-    "organizedBy": enum; // {section, tag}
-    "header": str;
-    "footer": str;
-    "section":{
-        "pattern": str;
-        "tag": str;
-        "options":[
-            str, str, str
-        ]; //expl: ['vertices', 'faces', 'normals', 'texture', 'colors', 'shaders', ..etc]
-    }
-    "comment":{
-        "pattern": str; //expl : tag_text
-        "tag": str; //expl: '#'
-    }
-    "vertex":{
-        "pattern": str; //expl: 'tag___x__y__z'
-        "tag": str; //expl: 'v'
-        "valueType": enum; // {double, float}
-        "defaultVal": value; // will be cast to the valueType above
-    }
-    "face":{
-        "pattern": str; //expl: 'tag___vID1__vID2__vID3'
-        "tag": str; //expl: 'f'
-        "axisConvention": enum; // {'RightHand', 'LeftHand'}
-    }
-    "vertexNormal":{
-        "pattern": str;
-        "tag": str;
-        "valueType": enum; // {'double', 'float'}
-        "defaultVal": value;
-    }
-    "vertexColor":{
-        "pattern": str;
-        "tag": str;
-        "valueType": enum; // {char, float}
-        "defaultVal": value;
-    }
-    "textureCoord":{
-        "pattern": str;
-        "tag": str;
-        "valueType": enum; // {double, float}
-        "defaultVal": value;
-    }
-    "vertexShader":{
-        "version": str;
-        "sourceCode": str;
-    }
-    "geometryShader":{
-        "version": str;
-        "sourceCode": str;
-    }
-    "fragmentShader":{
-        "version": str;
-        "sourceCode": str;
-    }
+{
+  ".ext": "", // epxl: '.obj'
+  "type": "text", // enum {'text, 'binary'} the saved format of the file
+  "version": "", // exp: '1.2.3'
+  "backwardCompatible": true, // {true, false} can represent old format or not
+  "organizedBy": "tag", // {section, tag} the components are inclosed in sections or labeld with tags
+  "header": "", // a text at the start of the file, can be anything
+  "footer": "", // a text at the end of the file, can be anything
+  "section": 
+  {
+    "exist": false, // will be parse if it is defined in the file format
+    "pattern": "", //expl: '----%tag%-----'
+    "tag": "",
+    "contains": [] //expl: ['vertices', 'faces', 'normals', 'texture', 'colors', 'shaders', ..etc]
+  },
+  "comment": 
+  {
+    "pattern": "", //expl : '%tag% %?%" i.e a TAG followed by anything
+    "tag": "" //expl: '#'
+  },
+  "vertex": 
+  {
+    "pattern": "", //expl:'%tag% %i% %{d,f}%*' a TAG followed by one INT id + XYZ in double or float data type separated by space
+    "tag": "", //expl: 'v'
+    "defaultVal": 0.0 // any missing value will be replaced by this value;
+  },
+  "face": 
+  {
+    "pattern": "", //expl: '%tag% %i%*' a TAG followed by an INT repeated many times separated by spaces
+    "tag": "", //expl: 'f'
+    "axisConvention": "RighHand" // {'RightHand', 'LeftHand'} for normal direction
+  },
+  "vertexNormal": 
+  {
+    "pattern": "", //expl: '%tag% %{d,f}%*'
+    "tag": "", //expl: 'vn'
+    "defaultVal": 0.0 // default value for missing data
+  },
+  "vertexColor": 
+  {
+    "pattern": "", //expl: '%tag% %{c,i,f,d}%*' a tag followd by many instance of a data of type CHAR/INT/DOUBLE/FLOAT 
+    "tag": "", //expl: 'vc'
+    "defaultVal": 0
+  },
+  "textureCoord": 
+  {
+    "pattern": "", //expl: '%tag% %{d,f}%*'
+    "tag": "", //expl: 'vtx'
+    "defaultVal": 0.0
+  },
+  "vertexShader": 
+  {
+    "version": "", //expl: '1.2.0'
+    "sourceCode": "" // the actual shader source code
+  },
+  "geometryShader": 
+  {
+    "version": "",
+    "sourceCode": ""
+  },
+  "fragmentShader": 
+  {
+    "version": "",
+    "sourceCode": ""
+  }
 }
