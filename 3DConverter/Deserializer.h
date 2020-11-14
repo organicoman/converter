@@ -3,7 +3,7 @@
 #define DESERIALIZER_H
 //---------STL---------------
 #include <string>  // std::string
-#include <utility> // std::pair
+#include <unordered_map> // std::unordered_map
 #include <vector>  // std::vector
 #include <thread>  // std::thread
 //---------------------------
@@ -13,15 +13,31 @@ class conv::Deserializer
 {
 	json m_jsonFile;
 	std::thread m_workerThread;
-	std::pair<std::string, std::vector<std::string>> m_vertexPattern;
-	std::pair<std::string, std::vector<std::string>> m_normalPattern;
-	std::pair<std::string, std::vector<std::string>> m_colorPattern;
-	std::pair<std::string, std::vector<std::string>> m_facePattern;
-	std::pair<std::string, std::vector<std::string>> m_textCoordPattern;
+	std::unordered_map<std::string, std::string> m_allTagPattern;
 
 public:
+	/*
+	 * constructs this object, by populating the m_jsonFile data member 
+	 * from the argument file, then start a worker thread to fill in the 
+	 * different patterns with sequential parsing tokens extracted from 
+	 * the m_jsonFile structure.
+	 * @param jsonFile: the name of the json file which define the template of
+	 *                  the file to be parsed later.
+	 * @returns: nothing! this is a constructor
+	 */
 	explicit Deserializer(const std::string& jsonFile);
-	Deserializer(const json& jsonFile);
+
+	// on the fly constructors
+	constexpr explicit Deserializer(const json& jsonFile);
+	explicit constexpr Deserializer(json&& jsonFile);
+
+	// copy Ctor
+	Deserializer(const Deserializer& other) = default;
+	Deserializer(Deserializer&& other) = default;
+
+	// assignement Ctor
+	Deserializer& operator=(const Deserializer& other) = default;
+	Deserializer& operator=(Deserializer&& other) = default;
 
 	/*
 	 * opens a file, then parse it according to the JSON fileformat provided in the
@@ -39,12 +55,12 @@ public:
 
 protected:
 	/*
-	 * a method to be run mainly in a worker thread to fill-in the data members
-	 * with an array of sequential tokens for later parse.
+	 * a method to be run mainly in a worker thread to create a map between
+	 * "tag" -> "pattern" for each element of the json file, in the background.
 	 * @param: no params
 	 * @returns: nothing
 	 */
-	virtual void parseSeqTokens();
+	virtual void tagPattern();
 
 };
 #endif//DESERIALIZER_H
