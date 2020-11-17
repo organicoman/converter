@@ -62,6 +62,17 @@ protected:
 	 */
 	virtual void tagPattern();
 
+	/*
+	 * given a TAG that denotes a Mesh feature (like a vertex), and a pattern of
+	 * how this line should be parsed. extract the data and put it inside the Mesh3D
+	 * container.
+	 * @param inputLine: input line as a stream to be parsed.
+	 * @param pattern: the way this data is laid out inside the 3D Mesh file
+	 * @param dest: the 3D Mesh container where to save the data
+	 * @returns: true for success, false otherwise
+	 */
+	virtual bool parsePattern(std::istringstream& inputLine, const std::string& pattern, Mesh3D<>& dest) const;
+	virtual bool parsePattern(std::istringstream& inputLine, const std::string& pattern, Mesh3Df& dest) const;
 };
 #endif//DESERIALIZER_H
 

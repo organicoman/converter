@@ -1,4 +1,9 @@
-﻿  Deserializer.cpp
-Deserializer.obj : error LNK2001: unresolved external symbol "public: virtual class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > __thiscall conv::Deserializer::streamReader(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class conv::Mesh3D<float> &)" (?streamReader@Deserializer@conv@@UAE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@ABV34@AAV?$Mesh3D@M@2@@Z)
-Deserializer.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall conv::Deserializer::parser(void)" (?parser@Deserializer@conv@@MAEXXZ)
-C:\Users\Nadir\source\Shapr3d\Debug\3DConverter.exe : fatal error LNK1120: 2 unresolved externals
+﻿  Converter.cpp
+  Deserializer.cpp
+  Factory.cpp
+  Face.cpp
+  Mesh3D.cpp
+  Serializer.cpp
+  Vextex.cpp
+  Generating Code...
+  3DConverter.vcxproj -> C:\Users\Nadir\source\Shapr3d\Debug\3DConverter.exe
