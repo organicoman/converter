@@ -81,6 +81,8 @@ namespace conv
 		template<typename Container>
 		Container prev_word(const Container& C, typename Container::iterator& beg, const typename Container::value_type& sep, ...)
 		{
+			static_assert(has_value_type_member<Container>::value);
+
 			if (beg == std::begin(C))
 				return Container{};
 			while (*beg == sep)
@@ -98,6 +100,7 @@ namespace conv
 		template<typename Container>
 		Container prev_word(const Container& C, typename Container::iterator& beg, const typename Container::value_type& sep, std::input_iterator_tag)
 			{
+				static_assert(has_value_type_member<Container>::value);
 				return Container{};
 			}
 	};
