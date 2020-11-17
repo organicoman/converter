@@ -73,10 +73,10 @@ void conv::Deserializer::tagPattern()
 
 	for (auto obj : m_jsonFile)
 	{
-		if (obj.contains("tag"))
+		if (obj.contains("tag"s))
 		{
-			auto tag = obj.at("tag").get<std::string>();
-			auto pattern = obj.at("pattern").get<std::string>();
+			auto tag = obj.at("tag"s).get<std::string>();
+			auto pattern = obj.at("pattern"s).get<std::string>();
 
 			// find the string '%tag%' in pattern and,
 			// append its position index to the end of 'pattern'

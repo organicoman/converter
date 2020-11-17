@@ -151,6 +151,12 @@ namespace conv
 		{
 			return ImplDetail::prev_word(m_c, end_pos, m_sep, typename std::iterator_traits<C_iter>::iterator_category());
 		}
+
+		explicit splitter& operator >> (Container& dest)
+		{
+			dest = next_word();
+			return *this;
+		}
 	};
 
 
