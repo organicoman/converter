@@ -71,8 +71,8 @@ protected:
 	 * @param dest: the 3D Mesh container where to save the data
 	 * @returns: true for success, false otherwise
 	 */
-	virtual bool parsePattern(std::istringstream& inputLine, const std::string& pattern, Mesh3D<>& dest) const;
-	virtual bool parsePattern(std::istringstream& inputLine, const std::string& pattern, Mesh3Df& dest) const;
+	virtual bool parsePattern(std::string& inputLine, const std::string& pattern, Mesh3D<>& dest) const;
+	virtual bool parsePattern(std::string& inputLine, const std::string& pattern, Mesh3Df& dest) const;
 };
 #endif//DESERIALIZER_H
 

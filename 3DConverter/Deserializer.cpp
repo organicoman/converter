@@ -42,7 +42,7 @@ std::string conv::Deserializer::streamReader(const std::string& filename, Mesh3D
 	std::string Line;
 	while (std::getline(source, Line))
 	{
-		std::istringstream lineStream(Line);
+		conv::splitter<std::string> lineStream(Line, ' ', std::begin(Line));
 		std::string word;
 
 		// extract the tag and stops at the first one which is not handled by this method
@@ -52,7 +52,7 @@ std::string conv::Deserializer::streamReader(const std::string& filename, Mesh3D
 		if (m_allTagPattern.find(word) == m_allTagPattern.end())
 			return Line;
 
-		parsePattern(lineStream, m_allTagPattern[word], dest);
+		parsePattern(Line, m_allTagPattern[word], dest);
 	}
 	return {}; // empty string for success.
 } 
@@ -91,7 +91,7 @@ void conv::Deserializer::tagPattern()
 	}
 }
 
-bool conv::Deserializer::parsePattern(std::istringstream & inputLine, const std::string & pattern, Mesh3D<>& dest) const
+bool conv::Deserializer::parsePattern(std::string & inputLine, const std::string & pattern, Mesh3D<>& dest) const
 {
 	/*
 	 * pattern parsing:
@@ -113,7 +113,7 @@ bool conv::Deserializer::parsePattern(std::istringstream & inputLine, const std:
 	return false;
 }
 
-bool conv::Deserializer::parsePattern(std::istringstream & inputLine, const std::string & pattern, Mesh3Df & dest) const
+bool conv::Deserializer::parsePattern(std::string & inputLine, const std::string & pattern, Mesh3Df & dest) const
 {
 	// becarful it's a C cast!
 	return parsePattern(inputLine, pattern, (Mesh3D<>&) dest);

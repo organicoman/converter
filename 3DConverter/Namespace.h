@@ -4,9 +4,11 @@
 
 //---------STL---------
 #include <array>
+#include <vector>
 #include <cstdint>
 #include <iostream>
 #include <type_traits>
+#include <iterator>
 
 //---------------------
 
@@ -76,29 +78,32 @@ namespace conv
 	// an algorithm to return next(/previous) word in a container given a separator
 	// a word: is a sequence of contained value_type bounded by two separator expl: {sep, value_type, value_type,..., sep}
 	
+	template<typename Container> class splitter; //forward declaraction
+
 	namespace ImplDetail
 	{
 		template<typename Container>
-		Container prev_word(const Container& C, typename Container::iterator& beg, const typename Container::value_type& sep, ...)
+		Container prev_word(splitter<Container>& self, ...)
 		{
 			static_assert(has_value_type_member<Container>::value);
 
-			if (beg == std::begin(C))
+			if (self.end_pos == std::begin(self.m_c))
 				return Container{};
-			while (*beg == sep)
+			while (*self.end_pos == self.m_sep)
 			{
-				beg = std::prev(beg);
-				if (beg == std::begin(C))
+				self.end_pos = std::prev(self.end_pos);
+				if (self.end_pos == std::begin(self.m_c))
 					return Container{};
 			}
-			auto end = std::next(beg);
-			while (beg != std::begin(C) and *beg != sep)
+			auto beg = self.end_pos;
+			self.end_pos = std::next(self.end_pos); // goback to the sep position
+			while (beg != std::begin(self.m_c) and *beg != self.m_sep)
 				beg = std::prev(beg);
-			return Container{ beg, end };
+			return Container{ beg, self.end_pos};
 		}
 
 		template<typename Container>
-		Container prev_word(const Container& C, typename Container::iterator& beg, const typename Container::value_type& sep, std::input_iterator_tag)
+		Container prev_word(splitter<Container>& self, std::input_iterator_tag)
 			{
 				static_assert(has_value_type_member<Container>::value);
 				return Container{};
@@ -110,55 +115,84 @@ namespace conv
 	{
 		using v_t = typename Container::value_type;
 		using C_iter = typename Container::iterator;
+		using C_diff_t = typename Container::difference_type;
 
 		const Container& m_c;
 		const v_t m_sep;
 		C_iter end_pos;
+		Container m_currWord;
 
+		template<typename C>
+		friend C ImplDetail::prev_word(splitter<C>& self, ...);//typename std::iterator_traits<typename C::iterator>::iterator_category());
+
+		
 	public:
 		splitter() = delete;
-		explicit splitter(const Container& C, v_t&& sep, const C_iter& beg) :
-			m_c(C), m_sep(sep), end_pos(beg)
+		explicit splitter(const Container& C, v_t&& sep, const C_iter& beg):
+			m_c(C), m_sep(sep), end_pos(beg), m_currWord()
 		{
-
 		}
 
 		splitter(const splitter& other) = default;
 		splitter(splitter&& other) = default;
 
+		splitter& operator =(const splitter& other) = delete; // becuase we are using  `m_c` as a reference to a Container
+		splitter& operator =(splitter&& other) = delete; // and `m_sep` is a constant value cannot be re-assigned
+
+		Container curr_word() const
+		{
+			return m_currWord;
+		}
+
 		Container next_word()
 		{
 			if (end_pos == std::end(m_c))
-				return Container{};
+			{
+				m_currWord = Container{};
+				return m_currWord;
+			}
 			while (*end_pos == m_sep)
 			{
 				end_pos = std::next(end_pos);
 				if (end_pos == std::end(m_c))
-					return Container{};
+				{
+					m_currWord = Container{};
+					return m_currWord;
+				}
 			}
 			auto beg = end_pos;
 			while (*end_pos != m_sep and end_pos != std::end(m_c))
 				end_pos = std::next(end_pos);
-			return Container{ beg, end_pos };
+			m_currWord = Container{ beg, end_pos };
+			return m_currWord;
 		}
-		template<typename Iterator, bool = false>
-		Container prev_word()
-		{
-			return Container{};
-		}
-
+		
 		Container prev_word()
 		{
 			return ImplDetail::prev_word(m_c, end_pos, m_sep, typename std::iterator_traits<C_iter>::iterator_category());
 		}
 
-		explicit splitter& operator >> (Container& dest)
+		splitter& operator >> (Container& dest)
 		{
 			dest = next_word();
 			return *this;
 		}
+
+		splitter& operator + (const C_diff_t & wordAt)
+		{
+			auto temp = wordIndx;
+			while (temp--)
+			{
+				if (next_word() == Container{})
+					break;
+			}
+			return *this;
+		}
+
+		splitter& operator += (const C_diff_t & wordAt)
+		{
+			return *this + wordIndex;
+		}
 	};
-
-
 }
 #endif //NAMESPACE_H
