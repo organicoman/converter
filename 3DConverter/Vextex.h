@@ -6,7 +6,7 @@
 
 //-----------------
 #include "Namespace.h"
-template<typename T>
+template<typename T = double>
 class conv::Vertex
 {
 	uint64_t m_id;
@@ -17,7 +17,7 @@ class conv::Vertex
 
 public:
 	Vertex(const uint64_t idx);
-	//Vertex(const uint64_t idx, const float x, const float y, const float z);
+	Vertex(const uint64_t idx, const T x, const T y, const T z);
 	//Vertex(const uint64_t idx, const pos3D pos);
 	void setPos(const pos3D<T>& position);
 	void setPos(const T x, const T y, const T z);

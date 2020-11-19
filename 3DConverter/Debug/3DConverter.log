@@ -1,7 +1,7 @@
 ﻿  Converter.cpp
   Deserializer.cpp
-  Face.cpp
   Factory.cpp
+  Face.cpp
   Mesh3D.cpp
   Serializer.cpp
   Vextex.cpp

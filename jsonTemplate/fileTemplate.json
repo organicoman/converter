@@ -18,34 +18,33 @@
     "pattern": "", //expl : '%tag% %?%" i.e a TAG followed by anything
     "tag": "" //expl: '#'
   },
-  "vertex": 
-  {
-    "pattern": "", //expl:'%tag% %i% %{d,f}%*' a TAG followed by one INT id + XYZ in double or float data type separated by space
+  "vertex": {
+    "pattern": "", //expl:'%tag% %id% %x% %y% %z%'
     "tag": "", //expl: 'v'
+    "type": "", // {float, double} to store coordinates
     "defaultVal": 0.0 // any missing value will be replaced by this value;
   },
-  "face": 
-  {
-    "pattern": "", //expl: '%tag% %i%*' a TAG followed by an INT repeated many times separated by spaces
+  "face": {
+    "pattern": "", //expl: '%tag% %id% %vId1% %vId2% %vId3%'
     "tag": "", //expl: 'f'
     "axisConvention": "RighHand" // {'RightHand', 'LeftHand'} for normal direction
   },
-  "vertexNormal": 
-  {
-    "pattern": "", //expl: '%tag% %{d,f}%*'
+  "vertexNormal": {
+    "pattern": "", //expl: '%tag% %id% %i% %j% %k%'
     "tag": "", //expl: 'vn'
+    "type":  "", // {float, double}
     "defaultVal": 0.0 // default value for missing data
   },
-  "vertexColor": 
-  {
-    "pattern": "", //expl: '%tag% %{c,i,f,d}%*' a tag followd by many instance of a data of type CHAR/INT/DOUBLE/FLOAT 
+  "vertexColor": {
+    "pattern": "", //expl: '%tag% %id% %r% %g% %b% %a%'
     "tag": "", //expl: 'vc'
+    "type":  "", // {char, float, double}
     "defaultVal": 0
   },
-  "textureCoord": 
-  {
-    "pattern": "", //expl: '%tag% %{d,f}%*'
+  "textureCoord": {
+    "pattern": "", //expl: '%tag% %id% %u% %v%'
     "tag": "", //expl: 'vtx'
+    "type": "", // {float, double}
     "defaultVal": 0.0
   },
   "vertexShader": 

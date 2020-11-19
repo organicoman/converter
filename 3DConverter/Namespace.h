@@ -11,17 +11,15 @@
 #include <iterator>
 
 //---------------------
-
 #include "../packages/nlohmann.json.3.9.1/build/native/include/nlohmann/json.hpp"
 
 using json = nlohmann::json;
 
-
-
 namespace conv
 {
-	enum shader_t {VERTEX_SHD, GEOMETRY_SHD, FRAGMENT_SD};
+	enum shader_e {VERTEX_SHD, GEOMETRY_SHD, FRAGMENT_SD};
 
+	enum feature_e {VERTEX, VNORMAL, VTEXTCOORD, VCOLOR, FACE};
 	constexpr auto vertex = u8"vertex";
 	constexpr auto normal = u8"vertexNormal";
 	constexpr auto face = u8"face";
@@ -85,7 +83,7 @@ namespace conv
 		template<typename Container>
 		Container prev_word(splitter<Container>& self, ...)
 		{
-			static_assert(has_value_type_member<Container>::value);
+			//static_assert(has_value_type_member<Container>::value);
 
 			if (self.end_pos == std::begin(self.m_c))
 				return Container{};
@@ -104,10 +102,10 @@ namespace conv
 
 		template<typename Container>
 		Container prev_word(splitter<Container>& self, std::input_iterator_tag)
-			{
-				static_assert(has_value_type_member<Container>::value);
-				return Container{};
-			}
+		{
+			//static_assert(has_value_type_member<Container>::value);
+			return Container{};
+		}
 	};
 
 	template<typename Container>
@@ -123,8 +121,10 @@ namespace conv
 		Container m_currWord;
 
 		template<typename C>
-		friend C ImplDetail::prev_word(splitter<C>& self, ...);//typename std::iterator_traits<typename C::iterator>::iterator_category());
+		friend C ImplDetail::prev_word(splitter<C>& self, ...);
 
+		template<typename C>
+		friend C ImplDetail::prev_word(splitter<C>& self, std::input_iterator_tag);
 		
 	public:
 		splitter() = delete;
@@ -169,7 +169,7 @@ namespace conv
 		
 		Container prev_word()
 		{
-			return ImplDetail::prev_word(m_c, end_pos, m_sep, typename std::iterator_traits<C_iter>::iterator_category());
+			return ImplDetail::prev_word(*this, typename std::iterator_traits<C_iter>::iterator_category());
 		}
 
 		splitter& operator >> (Container& dest)
@@ -180,7 +180,7 @@ namespace conv
 
 		splitter& operator + (const C_diff_t & wordAt)
 		{
-			auto temp = wordIndx;
+			auto temp = wordAt;
 			while (temp--)
 			{
 				if (next_word() == Container{})
@@ -191,7 +191,7 @@ namespace conv
 
 		splitter& operator += (const C_diff_t & wordAt)
 		{
-			return *this + wordIndex;
+			return *this + wordAt;
 		}
 	};
 }

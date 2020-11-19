@@ -4,7 +4,7 @@
 //---------STL---------------
 #include <string>  // std::string
 #include <unordered_map> // std::unordered_map
-#include <vector>  // std::vector
+#include <functional>  // std::function
 #include <thread>  // std::thread
 //---------------------------
 #include "Namespace.h"
@@ -14,6 +14,7 @@ class conv::Deserializer
 	json m_jsonFile;
 	std::thread m_workerThread;
 	std::unordered_map<std::string, std::string> m_allTagPattern;
+	std::unordered_map <std::string, std::function<bool(const std::string&, const std::string&)>> m_parsers;
 
 public:
 	/*
@@ -71,8 +72,10 @@ protected:
 	 * @param dest: the 3D Mesh container where to save the data
 	 * @returns: true for success, false otherwise
 	 */
-	virtual bool parsePattern(std::string& inputLine, const std::string& pattern, Mesh3D<>& dest) const;
-	virtual bool parsePattern(std::string& inputLine, const std::string& pattern, Mesh3Df& dest) const;
+	virtual bool parsePattern(const std::string& inputLine, Mesh3D<>& dest) const;
+	virtual bool parsePattern(const std::string& inputLine, Mesh3Df& dest) const;
+
+	bool dispatcher(const std::string& tag, const std::string& inputLine) const;
 };
 #endif//DESERIALIZER_H
 
