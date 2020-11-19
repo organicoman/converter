@@ -84,23 +84,35 @@ namespace conv
 	namespace ImplDetail
 	{
 		template<typename Container>
-		Container prev_word(splitter<Container>& self, ...)
+		Container prev_word(splitter<Container>& self, typename Container::iterator)
 		{
 			//static_assert(has_value_type_member<Container>::value);
+			auto rbeg = std::make_reverse_iterator(self.rend_pos);
 
-			if (self.end_pos == std::begin(self.m_c))
-				return Container{};
-			while (*self.end_pos == self.m_sep)
+			if (rbeg == std::rend(self.m_c))
 			{
-				self.end_pos = std::prev(self.end_pos);
-				if (self.end_pos == std::begin(self.m_c))
-					return Container{};
+				self.m_currWord = Container{};
+				return self.m_currWord;
 			}
-			auto beg = self.end_pos;
-			self.end_pos = std::next(self.end_pos); // goback to the sep position
-			while (beg != std::begin(self.m_c) and *beg != self.m_sep)
-				beg = std::prev(beg);
-			return Container{ beg, self.end_pos};
+			 
+			while (*rbeg == self.m_sep)
+			{
+				rbeg = std::next(rbeg);
+				if (rbeg == std::rend(self.m_c))
+				{
+					self.m_currWord = Container{};
+					return self.m_currWord;
+				}
+			}
+			self.rend_pos = rbeg.base();
+			self.end_pos = rbeg.base();
+
+			//self.end_pos = std::next(self.end_pos); // goback to the sep position
+			while (rbeg != std::rend(self.m_c) and *rbeg != self.m_sep)
+				rbeg = std::next(rbeg);
+			self.rend_pos = rbeg.base();
+			self.m_currWord = Container{ self.rend_pos, self.end_pos};
+			return self.m_currWord;
 		}
 
 		template<typename Container>
@@ -121,18 +133,15 @@ namespace conv
 		const Container& m_c;
 		const v_t m_sep;
 		C_iter end_pos;
+		C_iter rend_pos;
 		Container m_currWord;
-
-		template<typename C>
-		friend C ImplDetail::prev_word(splitter<C>& self, ...);
-
-		template<typename C>
-		friend C ImplDetail::prev_word(splitter<C>& self, std::input_iterator_tag);
+			   
+		friend Container ImplDetail::prev_word<Container>(splitter<Container>& self, C_iter);
 		
 	public:
 		splitter() = delete;
 		explicit splitter(const Container& C, v_t&& sep, const C_iter& beg):
-			m_c(C), m_sep(sep), end_pos(beg), m_currWord()
+			m_c(C), m_sep(sep), end_pos(beg), rend_pos(beg), m_currWord()
 		{
 		}
 
@@ -163,16 +172,16 @@ namespace conv
 					return m_currWord;
 				}
 			}
-			auto beg = end_pos;
+			rend_pos = end_pos;
 			while (*end_pos != m_sep and end_pos != std::end(m_c))
 				end_pos = std::next(end_pos);
-			m_currWord = Container{ beg, end_pos };
+			m_currWord = Container{ rend_pos, end_pos };
 			return m_currWord;
 		}
 		
 		Container prev_word()
 		{
-			return ImplDetail::prev_word(*this, typename std::iterator_traits<C_iter>::iterator_category());
+			return ImplDetail::prev_word(*this, C_iter{});
 		}
 
 		splitter& operator >> (Container& dest)
