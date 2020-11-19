@@ -14,7 +14,7 @@ class conv::Deserializer
 	json m_jsonFile;
 	std::thread m_workerThread;
 	std::unordered_map<std::string, std::string> m_allTagPattern;
-	std::unordered_map <std::string, std::function<bool(const std::string&, const std::string&)>> m_parsers;
+	std::unordered_map<std::string, conv::parser_t> m_parsers;
 
 public:
 	/*
@@ -52,6 +52,17 @@ public:
 	virtual std::string streamReader(const std::string& filename, Mesh3D<>& dest);
 	virtual std::string streamReader(const std::string& filename, Mesh3Df& dest);
 
+	/*
+	 * we have a table of "tag"->"parser"
+	 * adds a parser of a pattern for a feature expl(vertex, face, normal...etc)
+	 * this function takes 3 params: the pattern, an input line and a reference to
+	 * Mesh where to store the values
+	 * @param tag: the tag which corresponds to a feature in the JSON template file
+	 * @param parser: a function of signature boo(string, string, Mesh3D&)
+	 * @return: conv::RET_COD
+	 */
+	conv::RET_CODE addParser(const std::string& tag, parser_t parser);
+
 	virtual ~Deserializer() = default;
 
 protected:
@@ -75,7 +86,7 @@ protected:
 	virtual bool parsePattern(const std::string& inputLine, Mesh3D<>& dest) const;
 	virtual bool parsePattern(const std::string& inputLine, Mesh3Df& dest) const;
 
-	bool dispatcher(const std::string& tag, const std::string& inputLine) const;
+	bool dispatcher(const std::string& tag, const std::string& inputLine, Mesh3D<>& dest) const;
 };
 #endif//DESERIALIZER_H
 

@@ -26,6 +26,7 @@ namespace conv
 	constexpr auto textCoord = u8"textureCoord";
 	constexpr auto vertColor = u8"vertexColor";
 
+	enum RET_CODE {REPLACED = -1, ADDED = 1};
 	
 	template<typename T = double> using Matrix = std::array<std::array<T, 3>, 3>;
 	using Matrixf = Matrix<float>;
@@ -45,6 +46,8 @@ namespace conv
 
 	template<typename T= double> class Mesh3D;
 	using Mesh3Df = Mesh3D<float>;
+
+	using parser_t = std::function<bool(const std::string&, const std::string&, Mesh3D<>&)>;
 
 	class Converter;
 

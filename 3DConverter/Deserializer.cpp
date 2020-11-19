@@ -58,6 +58,19 @@ std::string conv::Deserializer::streamReader(const std::string & filename, Mesh3
 	return std::string();
 }
 
+conv::RET_CODE conv::Deserializer::addParser(const std::string & tag, parser_t parser)
+{
+	auto prev = m_parsers.find(tag);
+	conv::RET_CODE ret = conv::ADDED;
+	if (prev == m_parsers.end() or prev->second == nullptr)
+		ret = conv::ADDED;
+	else
+		ret = conv::REPLACED;
+
+	m_parsers[tag] = parser;
+	return ret;
+}
+
 bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3D<>& dest) const 
 {
 	conv::splitter<const std::string&> splitLine(inputLine, ' ', std::cbegin(inputLine));
@@ -66,17 +79,17 @@ bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3D<>& de
 	{
 		std::string pattern = keyVal->second;
 		conv::splitter<std::string> splitPatern(pattern, ' ', std::end(pattern));
-		auto tagPos = splitPatern.prev_word();
+		auto tagPos = splitPatern.prev_word(); //get last word 
 		splitLine += std::stoul(tagPos);
 		// seek a match between text at position tagPos and the value of available tags
 		if (keyVal->first != splitLine.curr_word())
 			continue;
-		break; // match!
+		break; // else matched!
 	}
 	if (keyVal == m_allTagPattern.end())
 		return false;
 	
-	return dispatcher(keyVal->first, inputLine);
+	return dispatcher(keyVal->first, inputLine, dest);
 }
 
 bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3Df & dest) const 
@@ -85,19 +98,18 @@ bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3Df & de
 	return parsePattern(inputLine, (Mesh3D<>&) dest);
 }
 
-bool conv::Deserializer::dispatcher(const std::string& tag, const std::string& inputLine) const
+bool conv::Deserializer::dispatcher(const std::string& tag, const std::string& inputLine, Mesh3D<>& dest) const
 {
-	std::string patCopy = m_allTagPattern[tag];
+	std::string patCopy = m_allTagPattern.at(tag);
+	auto parserIt = m_parsers.find(tag);
+	if (parserIt == m_parsers.end() or parserIt->second == nullptr)
+		return false;
+
 	//pop off the added text in the back of the pattern
 	while (patCopy.back() != ' ')
 		patCopy.pop_back();
-	auto parser = m_parsers[tag];
-
-	return parser(patCopy, inputLine);
+	return parserIt->second(patCopy, inputLine, dest);
 }
-
-
-
 void conv::Deserializer::tagPattern()
 {
 	// FIX ME: handle the object files wich uses 'Section' to define the 3D Mesh Features
@@ -121,6 +133,7 @@ void conv::Deserializer::tagPattern()
 			pattern += std::to_string(pos);
 
 			m_allTagPattern.insert({ tag, pattern });
+			m_parsers.insert({ tag, nullptr });
 		}
 	}
 }
