@@ -28,7 +28,38 @@ void conv::Serializer::streamWriter(const Mesh3D<>& mesh, std::ostream& dest)
 	// make sure the worker thread finished populating the hash Table
 	if(m_workerThread.joinable())
 		m_workerThread.join();
+	using namespace std::string_literals;
+	// stamp header
+	if (m_jsonFile.contains("header"))
+		dest << m_jsonFile.at("header").get<std::string>() << '\n';
 
+	// if `section` exists in json file layout then stamp the output according to it
+	if (m_jsonFile.contains("section"))
+	{
+		json jSection = m_jsonFile.at("section");
+		auto pattern = jSection.at("pattern").get<std::string>();
+		json jTags = jSection.at("tags");
+		
+		splitter<std::string> findTag(pattern, '%', std::begin(pattern));
+		std::string prefix = findTag.next_word();
+		std::string suffix = (findTag + 2).curr_word();
+		for (auto tag : jTags)
+		{
+			// the callback which print the mesh features
+			stamper_t meshPrint = m_stampers.at(tag.get<std::string>());
+			if (prefix.empty())
+				dest << pattern << '\n';
+			else
+				dest << prefix << tag.get<std::string>() << suffix << '\n';
+			auto tmpPat = m_allTagPattern.at(tag.get<std::string>());
+			meshPrint(mesh, tmpPat, dest);
+		}
+	}
+	// stamp footer
+	if (m_jsonFile.contains("footer"))
+		dest << m_jsonFile.at("footer").get<std::string>() <<'\n';
+
+	return;
 }
 
 void conv::Serializer::streamWriter(const Mesh3Df& mesh, std::ostream& dest)
@@ -77,7 +108,7 @@ void conv::Serializer::tagPattern()
 			pattern += std::to_string(pos);
 
 			m_allTagPattern.insert({ tag, pattern });
-			m_parsers.insert({ tag, nullptr });
+			m_stampers.insert({ tag, nullptr });
 		}
 	}
 }

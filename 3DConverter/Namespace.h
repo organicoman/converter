@@ -48,7 +48,7 @@ namespace conv
 	using Mesh3Df = Mesh3D<float>;
 
 	using parser_t = std::function<bool(const std::string&, const std::string&, Mesh3D<>&)>;
-	using stamper_t = std::function<std::string(const Mesh3D<>&, const std::string&)>;
+	using stamper_t = std::function<void(const Mesh3D<>&, const std::string&, std::ostream&)>;
 	class Converter;
 
 	struct Factory;
@@ -110,6 +110,13 @@ namespace conv
 			while (rbeg != std::rend(self.m_c) and *rbeg != self.m_sep)
 				rbeg = std::next(rbeg);
 			self.rend_pos = rbeg.base();
+
+			if (self.isFullsize())
+			{
+				self.m_currWord = Container{};
+				return self.m_currWord;
+			}
+
 			self.m_currWord = Container{ self.rend_pos, self.end_pos};
 			return self.m_currWord;
 		}
@@ -119,6 +126,20 @@ namespace conv
 		{
 			static_assert(has_value_type_member<Container>::value);
 			return Container{};
+		}
+
+		template<typename Container>
+		void reset(splitter<Container>& self, typename Container::iterator)
+		{
+			self.end_pos = self.start;
+			self.rend_pos = self.start;
+			self.curr_word = {};
+		}
+
+		template<typename Container>
+		void reset(splitter<Container>& self, std::input_iterator_tag)
+		{
+			return;
 		}
 	};
 
@@ -130,22 +151,23 @@ namespace conv
 		using C_diff_t = typename Container::difference_type;
 
 		const Container& m_c;
-		const v_t m_sep;
+		v_t m_sep;
+		const C_iter start;
 		C_iter end_pos;
 		C_iter rend_pos;
 		Container m_currWord;
 			   
 		friend Container ImplDetail::prev_word<Container>(splitter<Container>& self, C_iter);
-		
+		friend void ImplDetail::reset<Container>(splitter<Container>& self, C_iter);
 	public:
 		splitter() = delete;
 		splitter(const Container& C, v_t&& sep, const C_iter& beg):
-			m_c(C), m_sep(sep), end_pos(beg), rend_pos(beg), m_currWord()
+			m_c(C), m_sep(sep), start(beg), end_pos(beg), rend_pos(beg), m_currWord()
 		{
 		}
 
-		splitter(const splitter& other) = default;
-		splitter(splitter&& other) = default;
+		splitter(const splitter& other) = default; // deleted by default
+		splitter(splitter&& other) = default; // deleted by default?
 
 		splitter& operator =(const splitter& other) = delete; // becuase we are using  `m_c` as a reference to a Container
 		splitter& operator =(splitter&& other) = delete; // and `m_sep` is a constant value cannot be re-assigned
@@ -153,6 +175,29 @@ namespace conv
 		Container curr_word() const
 		{
 			return m_currWord;
+		}
+
+		bool isFullsize() const
+		{
+			auto currentSz = end_pos - rend_pos;
+			auto size = std::end(m_c) - std::begin(m_c);
+			return currentSz == size;
+		}
+
+		v_t getSeperator() const
+		{
+			return m_sep;
+		}
+
+		void setSepartor(const v_t& newSep)
+		{
+			m_sep = newSep;
+			return;
+		}
+
+		void rewind()
+		{
+			return ImplDetail::reset(*this, C_iter{});
 		}
 
 		Container next_word()
@@ -174,6 +219,14 @@ namespace conv
 			rend_pos = end_pos;
 			while (*end_pos != m_sep and end_pos != std::end(m_c))
 				end_pos = std::next(end_pos);
+
+			// if the container doesn't contain the separator then return empty
+			if (isFullsize())
+			{
+				m_currWord = Container{};
+				return m_currWord;
+			}
+
 			m_currWord = Container{ rend_pos, end_pos };
 			return m_currWord;
 		}

@@ -3,15 +3,14 @@
   "type": "text", // enum {'text, 'binary'} the saved format of the file
   "version": "", // exp: '1.2.3'
   "backwardCompatible": true, // {true, false} can represent old format or not
-  "organizedBy": "tag", // {section, tag} the components are inclosed in sections or labeld with tags
   "header": "", // a text at the start of the file, can be anything
   "footer": "", // a text at the end of the file, can be anything
   "section": 
   {
-    "exist": false, // will be parse if it is defined in the file format
-    "pattern": "", //expl: '----%tag%-----'
-    "tag": "",
-    "contains": [] //expl: ['vertices', 'faces', 'normals', 'texture', 'colors', 'shaders', ..etc]
+    "pattern": "", //expl: '<comment tag>----%tag%-----'
+    "tags": [] //available keyword: 
+    //['comment', 'vertex', 'face', 'vertexNormal', 'vertexColor', 'textureCoord', 
+    // 'vertexShader', 'geometryShader', 'fragmentShader']                  
   },
   "comment": 
   {
