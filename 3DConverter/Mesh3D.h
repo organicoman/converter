@@ -17,10 +17,10 @@ class conv::Mesh3D
 	std::string            m_vertShader;
 	std::string            m_fragShader;
 	std::string            m_geomShader;
-	json                   m_features;
+	json                   m_extrafeatures;
 
 public:
-	Mesh3D();
+	Mesh3D() = default;
 	explicit Mesh3D(uint64_t id);
 
 	inline void addVertex(const Vertex<T>& ver);
@@ -34,14 +34,14 @@ public:
 
 
 	inline void addShader(shader_e type, const std::string& source);
-	inline std::string getShader(const shader_e& type) const;
+	inline std::string getShader(shader_e type) const;
 
 	template<typename U>
 	inline void addFeature(const std::string& key, U&& value);
 
 	template<typename U> 
 	inline U getFeature(const std::string& key) const;
-	std::vector<std::string> listAllFeatures() const;
+	std::string listExtraFeatures() const;
 	
 	inline double area() const;
 	inline double volume() const;

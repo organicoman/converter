@@ -88,7 +88,6 @@ conv::RET_CODE conv::Serializer::addStamper(const std::string& tag, stamper_t pa
 void conv::Serializer::tagPattern()
 {
 	using namespace std::string_literals;
-	std::string tag_str = "%tag%"s;
 
 	for (auto obj : m_jsonFile)
 	{

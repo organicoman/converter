@@ -181,7 +181,7 @@
     <ClCompile Include="Face.cpp" />
     <ClCompile Include="Mesh3D.cpp" />
     <ClCompile Include="Serializer.cpp" />
-    <ClCompile Include="Vextex.cpp" />
+    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Namespace.h" />
@@ -191,7 +191,7 @@
     <ClInclude Include="Factory.h" />
     <ClInclude Include="Mesh3D.h" />
     <ClInclude Include="Serializer.h" />
-    <ClInclude Include="Vextex.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\jsonTemplate\fileTemplate.json" />
