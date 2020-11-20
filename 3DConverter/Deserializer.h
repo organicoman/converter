@@ -29,15 +29,15 @@ public:
 	explicit Deserializer(const std::string& jsonFile);
 
 	// on the fly constructors
-	constexpr explicit Deserializer(const json& jsonFile);
-	explicit constexpr Deserializer(json&& jsonFile);
+	explicit Deserializer(const json& jsonFile);
+	explicit Deserializer(json&& jsonFile);
 
 	// copy Ctor
-	Deserializer(const Deserializer& other) = default;
+	Deserializer(const Deserializer& other) = delete;
 	Deserializer(Deserializer&& other) = default;
 
 	// assignement Ctor
-	Deserializer& operator=(const Deserializer& other) = default;
+	Deserializer& operator=(const Deserializer& other) = delete;
 	Deserializer& operator=(Deserializer&& other) = default;
 
 	/*
@@ -83,8 +83,8 @@ protected:
 	 * @param dest: the 3D Mesh container where to save the data
 	 * @returns: true for success, false otherwise
 	 */
-	virtual bool parsePattern(const std::string& inputLine, Mesh3D<>& dest) const;
-	virtual bool parsePattern(const std::string& inputLine, Mesh3Df& dest) const;
+	virtual bool parsePattern(std::string& inputLine, Mesh3D<>& dest) const;
+	virtual bool parsePattern(std::string& inputLine, Mesh3Df& dest) const;
 
 	bool dispatcher(const std::string& tag, const std::string& inputLine, Mesh3D<>& dest) const;
 };

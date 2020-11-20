@@ -6,7 +6,7 @@
 
 //-----------------
 #include "Namespace.h"
-template<typename T = double>
+template<typename T>
 class conv::Vertex
 {
 	uint64_t m_id;

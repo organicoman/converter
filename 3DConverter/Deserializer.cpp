@@ -13,16 +13,16 @@ conv::Deserializer::Deserializer(const std::string & jsonFile)
 		source >> m_jsonFile;
 		// start a worker thread only when m_jsonFile structure is populated
 		if(!m_jsonFile.empty())
-			m_workerThread = std::move(std::thread(&Deserializer::tagPattern, this));
+			m_workerThread = std::thread(&Deserializer::tagPattern, this);
 	}
 }
 
-constexpr conv::Deserializer::Deserializer(const json & jsonFile):
+conv::Deserializer::Deserializer(const json & jsonFile):
 	m_jsonFile(jsonFile), m_workerThread(&Deserializer::tagPattern, this)
 {
 }
 
-constexpr conv::Deserializer::Deserializer(json && jsonFile):
+conv::Deserializer::Deserializer(json && jsonFile):
 	m_jsonFile(std::move(jsonFile)), m_workerThread(&Deserializer::tagPattern, this)
 {
 }
@@ -30,7 +30,8 @@ constexpr conv::Deserializer::Deserializer(json && jsonFile):
 std::string conv::Deserializer::streamReader(const std::string& filename, Mesh3D<>& dest)
 {
 	// make sure the worker thread finished populating the hash Table
-	m_workerThread.join();
+	if(m_workerThread.joinable())
+		m_workerThread.join();
 
 	std::ifstream source(filename);
 	if (!source.is_open())
@@ -53,16 +54,19 @@ std::string conv::Deserializer::streamReader(const std::string& filename, Mesh3D
 
 std::string conv::Deserializer::streamReader(const std::string & filename, Mesh3Df & dest)
 {
-	// becarful it's a C cast!
-	streamReader(filename, (Mesh3D<>&) dest);
-	return std::string();
+	// becarful it's a C cast!	
+	return streamReader(filename, (Mesh3D<>&) dest);
 }
 
 conv::RET_CODE conv::Deserializer::addParser(const std::string & tag, parser_t parser)
 {
+	// make sure the worker thread finished populating the hash Table
+	if (m_workerThread.joinable())
+		m_workerThread.join();
+
 	auto prev = m_parsers.find(tag);
 	conv::RET_CODE ret = conv::ADDED;
-	if (prev == m_parsers.end() or prev->second == nullptr)
+	if (prev == m_parsers.end() || prev->second == nullptr)
 		ret = conv::ADDED;
 	else
 		ret = conv::REPLACED;
@@ -71,9 +75,9 @@ conv::RET_CODE conv::Deserializer::addParser(const std::string & tag, parser_t p
 	return ret;
 }
 
-bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3D<>& dest) const 
+bool conv::Deserializer::parsePattern(std::string& inputLine, Mesh3D<>& dest) const 
 {
-	conv::splitter<const std::string&> splitLine(inputLine, ' ', std::cbegin(inputLine));
+	conv::splitter<std::string> splitLine(inputLine, ' ', std::begin(inputLine));
 	auto keyVal = m_allTagPattern.begin();
 	for (; keyVal!= m_allTagPattern.end(); ++keyVal)
 	{
@@ -92,7 +96,7 @@ bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3D<>& de
 	return dispatcher(keyVal->first, inputLine, dest);
 }
 
-bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3Df & dest) const 
+bool conv::Deserializer::parsePattern(std::string& inputLine, Mesh3Df & dest) const 
 {
 	// becarful it's a C cast!
 	return parsePattern(inputLine, (Mesh3D<>&) dest);
@@ -102,7 +106,7 @@ bool conv::Deserializer::dispatcher(const std::string& tag, const std::string& i
 {
 	std::string patCopy = m_allTagPattern.at(tag);
 	auto parserIt = m_parsers.find(tag);
-	if (parserIt == m_parsers.end() or parserIt->second == nullptr)
+	if (parserIt == m_parsers.end() || parserIt->second == nullptr)
 		return false;
 
 	//pop off the added text in the back of the pattern

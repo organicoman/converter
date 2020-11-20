@@ -33,14 +33,14 @@ public:
 	inline Face getFace(uint64_t fID) const;
 
 
-	inline void addShader(shader_t type, const std::string& source);
-	inline std::string getShader(const shader_t& type) const;
+	inline void addShader(shader_e type, const std::string& source);
+	inline std::string getShader(const shader_e& type) const;
 
-	template<typename T>
-	inline void addFeature(const std::string& key, T&& value);
+	template<typename U>
+	inline void addFeature(const std::string& key, U&& value);
 
-	template<typename T> 
-	inline T getFeature(const std::string& key) const;
+	template<typename U> 
+	inline U getFeature(const std::string& key) const;
 	std::vector<std::string> listAllFeatures() const;
 	
 	inline double area() const;

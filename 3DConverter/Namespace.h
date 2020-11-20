@@ -48,7 +48,7 @@ namespace conv
 	using Mesh3Df = Mesh3D<float>;
 
 	using parser_t = std::function<bool(const std::string&, const std::string&, Mesh3D<>&)>;
-
+	using stamper_t = std::function<std::string(const Mesh3D<>&, const std::string&)>;
 	class Converter;
 
 	struct Factory;
@@ -86,7 +86,7 @@ namespace conv
 		template<typename Container>
 		Container prev_word(splitter<Container>& self, typename Container::iterator)
 		{
-			//static_assert(has_value_type_member<Container>::value);
+			static_assert(has_value_type_member<Container>::value);
 			auto rbeg = std::make_reverse_iterator(self.rend_pos);
 
 			if (rbeg == std::rend(self.m_c))
@@ -107,7 +107,6 @@ namespace conv
 			self.rend_pos = rbeg.base();
 			self.end_pos = rbeg.base();
 
-			//self.end_pos = std::next(self.end_pos); // goback to the sep position
 			while (rbeg != std::rend(self.m_c) and *rbeg != self.m_sep)
 				rbeg = std::next(rbeg);
 			self.rend_pos = rbeg.base();
@@ -118,7 +117,7 @@ namespace conv
 		template<typename Container>
 		Container prev_word(splitter<Container>& self, std::input_iterator_tag)
 		{
-			//static_assert(has_value_type_member<Container>::value);
+			static_assert(has_value_type_member<Container>::value);
 			return Container{};
 		}
 	};
@@ -140,7 +139,7 @@ namespace conv
 		
 	public:
 		splitter() = delete;
-		explicit splitter(const Container& C, v_t&& sep, const C_iter& beg):
+		splitter(const Container& C, v_t&& sep, const C_iter& beg):
 			m_c(C), m_sep(sep), end_pos(beg), rend_pos(beg), m_currWord()
 		{
 		}
