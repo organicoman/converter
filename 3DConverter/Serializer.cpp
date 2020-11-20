@@ -87,8 +87,6 @@ conv::RET_CODE conv::Serializer::addStamper(const std::string& tag, stamper_t pa
 
 void conv::Serializer::tagPattern()
 {
-	// FIX ME: handle the object files wich uses 'Section' to define the 3D Mesh Features
-
 	using namespace std::string_literals;
 	std::string tag_str = "%tag%"s;
 
@@ -98,14 +96,6 @@ void conv::Serializer::tagPattern()
 		{
 			auto tag = obj.at("tag"s).get<std::string>();
 			auto pattern = obj.at("pattern"s).get<std::string>();
-
-			// find the string '%tag%' in pattern and,
-			// append its position index to the end of 'pattern'
-			auto it = std::search(pattern.begin(), pattern.end(),
-				tag_str.begin(), tag_str.end());
-			size_t pos = pattern.begin() - it;
-			pattern.push_back(' '); // seperate this addition with a space
-			pattern += std::to_string(pos);
 
 			m_allTagPattern.insert({ tag, pattern });
 			m_stampers.insert({ tag, nullptr });
