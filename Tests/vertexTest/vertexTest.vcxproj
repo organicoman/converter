@@ -77,14 +77,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Nadir\source\Shapr3d\3DConverter\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Nadir\source\Shapr3d\packages\nlohmann.json.3.9.1\build\native\include;C:\Users\Nadir\source\Shapr3d\3DConverter\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\Nadir\source\Shapr3d\3DConverter\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Nadir\source\Shapr3d\packages\nlohmann.json.3.9.1\build\native\include;C:\Users\Nadir\source\Shapr3d\3DConverter\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

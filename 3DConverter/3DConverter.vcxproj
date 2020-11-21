@@ -86,15 +86,20 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\Nadir\source\Shapr3d\3DConverter\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\Nadir\source\Shapr3d\3DConverter\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Clang(debug)|Win32'">
+    <IncludePath>C:\Users\Nadir\source\Shapr3d\3DConverter\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -181,18 +186,18 @@
     <ClCompile Include="Serializer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Namespace.h" />
-    <ClInclude Include="Converter.h" />
-    <ClInclude Include="Deserializer.h" />
-    <ClInclude Include="Face.h" />
-    <ClInclude Include="Factory.h" />
-    <ClInclude Include="Mesh3D.h" />
-    <ClInclude Include="Serializer.h" />
-    <ClInclude Include="Vertex.h" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\jsonTemplate\fileTemplate.json" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Converter.h" />
+    <ClInclude Include="include\Deserializer.h" />
+    <ClInclude Include="include\Face.h" />
+    <ClInclude Include="include\Factory.h" />
+    <ClInclude Include="include\Mesh3D.h" />
+    <ClInclude Include="include\Namespace.h" />
+    <ClInclude Include="include\Serializer.h" />
+    <ClInclude Include="include\Vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
