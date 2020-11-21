@@ -26,7 +26,7 @@ inline void conv::Mesh3D<T>::addVertex(Vertex<T>&& ver)
 }
 
 template<typename T>
-inline conv::Vertex<T> conv::Mesh3D<T>::getVertex(uint64_t vID) const
+conv::Vertex<T> conv::Mesh3D<T>::getVertex(uint64_t vID) const
 {
 	auto v = m_vertArr[vID];
 	if ( v.getID() == vID)
@@ -58,7 +58,7 @@ inline void conv::Mesh3D<T>::addFace(Face&& f)
 }
 
 template<typename T>
-inline conv::Face conv::Mesh3D<T>::getFace(uint64_t fID) const
+conv::Face conv::Mesh3D<T>::getFace(uint64_t fID) const
 {
 	auto f = m_faceArr[fID];
 	if (f.getID() == fID)

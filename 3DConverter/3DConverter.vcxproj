@@ -178,10 +178,7 @@
     <ClCompile Include="Converter.cpp" />
     <ClCompile Include="Deserializer.cpp" />
     <ClCompile Include="Factory.cpp" />
-    <ClCompile Include="Face.cpp" />
-    <ClCompile Include="Mesh3D.cpp" />
     <ClCompile Include="Serializer.cpp" />
-    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Namespace.h" />

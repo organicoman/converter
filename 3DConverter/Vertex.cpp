@@ -1,7 +1,7 @@
 #include "Vertex.h"
 
 template<typename T>
-inline conv::Vertex<T>::Vertex(const uint64_t idx):
+conv::Vertex<T>::Vertex(const uint64_t idx):
 	m_id(idx),m_position(), m_normal(), m_texCoord(), m_color()
 {
 }
@@ -193,5 +193,5 @@ inline conv::Vertex<T>& conv::Vertex<T>::operator-(const Vertex<T>& other)
 template<typename T>
 conv::Vertex<T>::operator bool() const
 {
-	return getPos_X() & getPos_Y() & getPos_Z();
+	return (getPos_X() + getPos_Y() + getPos_Z()) != 0;
 }
