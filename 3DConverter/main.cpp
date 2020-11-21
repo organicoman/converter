@@ -2,13 +2,10 @@
 //
 
 #include <iostream>
-#include "Vertex.h"
+
 
 int main()
 {
-    uint64_t ID = 1830;
-    conv::Vertex<> v(ID);
-    std::cout << "v.getID() == ID ?" << std::boolalpha << (v.getID() == ID) << '\n';
     std::cout << "Hello World!\n";
 }
 
