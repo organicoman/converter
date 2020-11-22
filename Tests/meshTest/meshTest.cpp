@@ -64,14 +64,26 @@ namespace meshTest
 		conv::Vertex<> v1{ 1, 1, 0, 0 };
 		conv::Vertex<> v2{ 2, 0, 1, 1 };
 		conv::Vertex<> v3{ 3, 1, 1, 0 };
+		conv::Vertex<> v4{ 4,0,0,0 };
+		conv::Vertex<> v5{ 5, 0,1,0 };
+		conv::Vertex<> v6{ 6, 0,0,1 };
+		conv::Vertex<> v7{ 7, 1,1,1 };
+		conv::Vertex<> v8{ 8, 1,0,1 };
+		conv::Face f1{ 1, v4.getID(), v1.getID(), v3.getID() };
+		conv::Face f2{2, v4.getID(), v3.getID(), v5.getID()};
+		conv::Face f3{ 3, v4.getID(), v1.getID(), v8.getID() };
+		conv::Face f4{ 4, v4.getID(), v8.getID(), v6.getID() };
+		conv::Face f5{5, v1.getID(), v3.getID(), v7.getID()};
+		conv::Face f6{6, v1.getID(), v7.getID(), v8.getID()};
+		conv::Face f7{7, v6.getID(), v8.getID(), v7.getID()};
+		conv::Face f8{8, v6.getID(), v7.getID(), v2.getID()};
+		conv::Face f9{9, v4.getID(), v5.getID(), v2.getID()};
+		conv::Face f10{10, v4.getID(), v2.getID(), v6.getID()};
+		conv::Face f11{11, v5.getID(), v3.getID(), v7.getID()};
+		conv::Face f12{12, v5.getID(), v7.getID(), v2.getID()};
 	
 	public:
 
-		meshTest()
-		{
-
-		}
-		
 		TEST_METHOD(defaultCtor)
 		{
 			Assert::IsTrue(std::is_default_constructible<conv::Mesh3D<>>::value, L"Mesh3D shoudl be default constructible!");
@@ -137,7 +149,7 @@ namespace meshTest
 			testMesh.addVertex(std::move(p));
 
 			Assert::AreEqual(v1, testMesh.getVertex(this->v1.getID()), L"Failed to get the same Vertex!");
-			Assert::AreEqual(p, testMesh.getVertex(p.getID()), L"Failed to get the same Vertex!");//this is a move from variable??
+			Assert::AreEqual(p, testMesh.getVertex(p.getID()), L"Failed to get the same Vertex!");
 			Assert::IsFalse(testMesh.isVertexEmpty(), L"Function Implementation needs to be checked!");
 			// ---- no side effect ----
 			Assert::AreEqual(ID, testMesh.getID(), L"failed to initialize the ID correctly!");
@@ -157,11 +169,84 @@ namespace meshTest
 			testMesh.addFace(std::move(p));
 
 			Assert::AreEqual(testMesh.getFace(f.getID()), f, L"Failed to get the same Face!");
-			Assert::AreNotEqual(testMesh.getFace(p.getID()), p, L"Failed to get the same Vertex!");//this is a move from variable??
+			Assert::AreNotEqual(testMesh.getFace(p.getID()), p, L"Failed to get the same Vertex!");
 			Assert::IsFalse(testMesh.isFaceEmpty(), L"Function Implementation needs to be checked!");
+			Assert::IsTrue(testMesh.isVertexEmpty(), L"we added 2 Faces but no vertices!");
 			// ---- no side effect ----
 			Assert::AreEqual(ID, testMesh.getID(), L"failed to initialize the ID correctly!");
 			Assert::IsFalse(testMesh.isFaceEmpty(), L"at Construction no Face available!");
+			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::VERTEX_SHD), L"default Construction should be empty!");
+			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::GEOMETRY_SHD), L"default Construction should be empty!");
+			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::FRAGMENT_SHD), L"default Construction should be empty!");
+			Assert::AreEqual(std::string{ "null" }, testMesh.listExtraFeatures(), L"default Construction should be empty!");
+		}
+
+		TEST_METHOD(MeshSurfaceArea)
+		{
+			testMesh.addVertex(v1);
+			testMesh.addVertex(v2);
+			testMesh.addVertex(v3);
+			testMesh.addVertex(v4);
+			testMesh.addVertex(v5);
+			testMesh.addVertex(v6);
+			testMesh.addVertex(v7);
+			testMesh.addVertex(v8);
+
+			testMesh.addFace(f1);
+			testMesh.addFace(f2);
+			testMesh.addFace(f3);
+			testMesh.addFace(f4);
+			testMesh.addFace(f5);
+			testMesh.addFace(f6);
+			testMesh.addFace(f7);
+			testMesh.addFace(f8);
+			testMesh.addFace(f9);
+			testMesh.addFace(f10);
+			testMesh.addFace(f11);
+			testMesh.addFace(f11);
+			testMesh.addFace(f12);
+
+			Assert::AreEqual(6.0, testMesh.area(), L"a Unit cube should have a surface area equal 6!");
+			// ---- no side effect ----
+			Assert::AreEqual((uint64_t)1830, testMesh.getID(), L"failed to initialize the ID correctly!");
+			Assert::IsFalse(testMesh.isFaceEmpty(), L"a Cube has 12 Triangle Faces!");
+			Assert::IsFalse(testMesh.isVertexEmpty(), L"a Cube has 8 vertices!");
+			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::VERTEX_SHD), L"default Construction should be empty!");
+			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::GEOMETRY_SHD), L"default Construction should be empty!");
+			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::FRAGMENT_SHD), L"default Construction should be empty!");
+			Assert::AreEqual(std::string{ "null" }, testMesh.listExtraFeatures(), L"default Construction should be empty!");
+		}
+
+		TEST_METHOD(MeshVolume)
+		{
+			testMesh.addVertex(v1);
+			testMesh.addVertex(v2);
+			testMesh.addVertex(v3);
+			testMesh.addVertex(v4);
+			testMesh.addVertex(v5);
+			testMesh.addVertex(v6);
+			testMesh.addVertex(v7);
+			testMesh.addVertex(v8);
+
+			testMesh.addFace(f1);
+			testMesh.addFace(f2);
+			testMesh.addFace(f3);
+			testMesh.addFace(f4);
+			testMesh.addFace(f5);
+			testMesh.addFace(f6);
+			testMesh.addFace(f7);
+			testMesh.addFace(f8);
+			testMesh.addFace(f9);
+			testMesh.addFace(f10);
+			testMesh.addFace(f11);
+			testMesh.addFace(f11);
+			testMesh.addFace(f12);
+
+			Assert::AreEqual(1.0, testMesh.volume(), L"a Unit cube should have a volume equal 1!");
+			// ---- no side effect ----
+			Assert::AreEqual((uint64_t)1830, testMesh.getID(), L"failed to initialize the ID correctly!");
+			Assert::IsFalse(testMesh.isFaceEmpty(), L"a Cube has 12 Triangle Faces!");
+			Assert::IsFalse(testMesh.isVertexEmpty(), L"a Cube has 8 vertices!");
 			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::VERTEX_SHD), L"default Construction should be empty!");
 			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::GEOMETRY_SHD), L"default Construction should be empty!");
 			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::FRAGMENT_SHD), L"default Construction should be empty!");

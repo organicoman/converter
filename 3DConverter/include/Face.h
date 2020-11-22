@@ -55,6 +55,20 @@ public:
 	 */
 	pos3D<> center(const Mesh3D<>& mesh) const;
 
+	/*
+	 * Checks if two Faces are identical same IDs same set of Vertices
+	 * the set of Vertices could be in shuffled order but the same value
+	 * @param other: anothor face
+	 * @returns : true if identical, false otherwise
+	 */
 	bool operator ==(const Face& other) const;
+
+	/*
+	 * adds the area of the two surface, this is handy to calculate a Mesh
+	 * surface area.
+	 * @param other: a face even if it is the same as this one
+	 * @returns: the sum of the two area;
+	 */
+	double sumArea(const Face& other, const Mesh3D<>& mesh) const;
 };
 #endif //FACE_H

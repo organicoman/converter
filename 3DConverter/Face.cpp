@@ -81,3 +81,8 @@ bool conv::Face::operator ==(const conv::Face& other) const
 
 	return t & v;
 }
+
+double conv::Face::sumArea(const conv::Face& other, const conv::Mesh3D<>& mesh) const
+{
+	return area(mesh) + other.area(mesh);
+}

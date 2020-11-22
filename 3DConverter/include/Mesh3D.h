@@ -184,10 +184,13 @@ std::string conv::Mesh3D<T>::listExtraFeatures() const
 template<typename T>
 inline double conv::Mesh3D<T>::area() const
 {
-	auto BinOp = [&](const Face& f1, const Face& f2)
-	{ return std::abs(f1.area(*this)) + std::abs(f2.area(*this)); };
-
-	return std::reduce(m_faceArr.begin(), m_faceArr.end(), 0, BinOp);
+	/*auto BinOp = [&](const Face& f1, const Face& f2)
+	{ return std::abs(f1.area(*this)) + std::abs(f2.area(*this)); };*/
+	double surface = 0.0;
+	for (auto f : m_faceArr)
+		surface += f.second.area(*this);
+	/*return std::reduce(m_faceArr.begin(), m_faceArr.end(), 0, BinOp);*/
+	return surface;
 }
 
 template<typename T>
