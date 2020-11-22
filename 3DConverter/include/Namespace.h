@@ -18,7 +18,7 @@ using json = nlohmann::json;
 namespace conv
 {
 	constexpr size_t BIG_SIZE = 500'000;
-	enum shader_e {VERTEX_SHD, GEOMETRY_SHD, FRAGMENT_SD};
+	enum shader_e {VERTEX_SHD, GEOMETRY_SHD, FRAGMENT_SHD};
 
 	enum feature_e {VERTEX, VNORMAL, VTEXTCOORD, VCOLOR, FACE};
 	constexpr auto vertex = u8"vertex";

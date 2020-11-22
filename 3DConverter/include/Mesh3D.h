@@ -31,6 +31,12 @@ public:
 
 	uint64_t getID() const;
 
+	bool isVertexEmpty() const { return !m_vertArr.size(); }
+	void clearVertex() { m_vertArr.clear(); }
+
+	bool isFaceEmpty() const { return !m_faceArr.size(); }
+	void clearFaces() { m_faceArr.clear(); }
+
 	inline void addVertex(const Vertex<T>& ver);
 	inline void addVertex(Vertex<T>&& ver);
 
@@ -125,7 +131,7 @@ inline void conv::Mesh3D<T>::addShader(shader_e type, const std::string& source)
 	case conv::GEOMETRY_SHD:
 		m_geomShader = source;
 		break;
-	case conv::FRAGMENT_SD:
+	case conv::FRAGMENT_SHD:
 		m_fragShader = source;
 		break;
 	default:
@@ -144,7 +150,7 @@ inline std::string conv::Mesh3D<T>::getShader(shader_e type) const
 	case conv::GEOMETRY_SHD:
 		return m_geomShader;
 
-	case conv::FRAGMENT_SD:
+	case conv::FRAGMENT_SHD:
 		return m_fragShader;
 
 	default:
@@ -172,7 +178,7 @@ inline U conv::Mesh3D<T>::getFeature(const std::string& key) const
 template<typename T>
 std::string conv::Mesh3D<T>::listExtraFeatures() const
 {
-	return m_extrafeatures.dump();
+	return std::string(m_extrafeatures.dump());
 }
 
 template<typename T>

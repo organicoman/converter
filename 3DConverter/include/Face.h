@@ -54,5 +54,7 @@ public:
 	 * @returns the 3D position of the face center in double precision
 	 */
 	pos3D<> center(const Mesh3D<>& mesh) const;
+
+	bool operator ==(const Face& other) const;
 };
 #endif //FACE_H

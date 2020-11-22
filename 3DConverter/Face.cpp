@@ -1,9 +1,10 @@
 #include "Face.h"
 #include "Mesh3D.h"
 #include "Vertex.h"
+#include <initializer_list>
 
 conv::Face::Face(const uint64_t id, uint64_t v1, uint64_t v2, uint64_t v3) :
-	m_id(id), m_vertices({ v1, v2, v3 })
+	m_id(id), m_vertices(std::initializer_list<uint64_t>{ v1, v2, v3 })
 {
 }
 
@@ -71,4 +72,12 @@ conv::pos3D<> conv::Face::center(const Mesh3D<>& mesh) const
 	auto z = v1.getPos_Z() + v2.getPos_Z() + v3.getPos_Z();
 
 	return { x / 3, y / 3, z / 3 };
+}
+
+bool conv::Face::operator ==(const conv::Face& other) const
+{
+	bool t = getID() == other.getID();
+	bool v = getVertIDs() == other.getVertIDs();
+
+	return t & v;
 }
