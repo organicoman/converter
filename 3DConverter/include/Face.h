@@ -44,7 +44,7 @@ public:
 	double area(const Mesh3D<>& mesh) const;
 
 	/*
-	 * calculates the face normal
+	 * calculates the face normal, not normalized into [-1,1] range
 	 * @returns the 3D normal vector in double precision
 	 */
 	pos3D<> normal(const Mesh3D<>& mesh) const;
@@ -56,4 +56,3 @@ public:
 	pos3D<> center(const Mesh3D<>& mesh) const;
 };
 #endif //FACE_H
-

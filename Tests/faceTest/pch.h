@@ -9,5 +9,7 @@
 
 // add headers that you want to pre-compile here
 #include "Face.h"
+#include "Mesh3D.h"
+#include "Vertex.h"
 
 #endif //PCH_H

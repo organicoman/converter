@@ -3,9 +3,11 @@
 #define MESH3D_H
 //--------STL-----------
 #include <vector>
+#include <unordered_map>
 #include <string>
 #include <algorithm>
 #include <execution>
+#include <limits>
 //----------------------
 #include "Namespace.h"
 #include "Face.h"
@@ -13,9 +15,11 @@
 template<typename T>
 class conv::Mesh3D
 {
+	using VArr_t = std::unordered_map<uint64_t, conv::Vertex<T>>;
+	using FArr_t = std::unordered_map<uint64_t, conv::Face>;
 	uint64_t               m_id;
-	std::vector<Vertex<T>> m_vertArr;
-	std::vector<Face>      m_faceArr;
+	VArr_t                 m_vertArr;
+	FArr_t                 m_faceArr;
 	std::string            m_vertShader;
 	std::string            m_fragShader;
 	std::string            m_geomShader;
@@ -71,66 +75,43 @@ inline uint64_t conv::Mesh3D<T>::getID() const
 template<typename T>
 inline void conv::Mesh3D<T>::addVertex(const Vertex<T>& ver)
 {
-	m_vertArr.push_back(ver);
+	m_vertArr.insert({ ver.getID(), ver });
 }
 
 template<typename T>
 inline void conv::Mesh3D<T>::addVertex(Vertex<T>&& ver)
 {
-	m_vertArr.push_back(ver);
+	m_vertArr.insert({ ver.getID(), std::move(ver) });
 }
 
 template<typename T>
 conv::Vertex<T> conv::Mesh3D<T>::getVertex(uint64_t vID) const
 {
-	auto v = m_vertArr[vID];
-	if (v.getID() == vID)
-		return v;
-	// assume that the vertices are in random order
-	auto lambda = [=](const Vertex<T>& p) { return p.getID() == vID; };
-	if (m_vertArr.size() > BIG_SIZE)
-	{
-		auto it = std::find_if(std::execution::par_unseq,
-			m_vertArr.begin(), m_vertArr.end(), lambda);
-		return *it;
-	}
-	else
-	{
-		auto it = std::find_if(m_vertArr.begin(), m_vertArr.end(), lambda);
-		return *it;
-	}
+	auto vIt = m_vertArr.find(vID);
+	if (vIt == m_vertArr.end())
+		return {std::numeric_limits<uint64_t>::max()};
+	return vIt->second;
 }
 
 template<typename T>
 inline void conv::Mesh3D<T>::addFace(const Face& f)
 {
-	m_faceArr.push_back(f);
+	m_faceArr.insert({f.getID(), f});
 }
 
 template<typename T>
 inline void conv::Mesh3D<T>::addFace(Face&& f)
 {
-	m_faceArr.push_back(f);
+	m_faceArr.insert({ f.getID(), std::move(f) });
 }
 
 template<typename T>
 conv::Face conv::Mesh3D<T>::getFace(uint64_t fID) const
 {
-	auto f = m_faceArr[fID];
-	if (f.getID() == fID)
-		return f;
-	// assume that the faces are in random order
-	auto lambda = [](const Face& p) { return p.getID() == fID; };
-	if (m_faceArr.size() > BIG_SIZE)
-	{
-		auto it = std::find_if(std::execution::par_unseq,
-			m_faceArr.begin(), m_faceArr.end(), lambda);
-	}
-	else
-	{
-		auto it = std::find_if(m_faceArr.begin(), m_faceArr.end(), lambda);
-	}
-	return *it;
+	auto fIt = m_faceArr.find(fID);
+	if (fIt == m_faceArr.end())
+		return {0,0,0,0};
+	return fIt->second;
 }
 
 template<typename T>
