@@ -8,6 +8,7 @@
 #include <execution>
 //----------------------
 #include "Namespace.h"
+#include "Face.h"
 
 template<typename T>
 class conv::Mesh3D
@@ -86,17 +87,18 @@ conv::Vertex<T> conv::Mesh3D<T>::getVertex(uint64_t vID) const
 	if (v.getID() == vID)
 		return v;
 	// assume that the vertices are in random order
-	auto lambda = [](const Vertex<T>&) p) { return p.getID() == vID; };
+	auto lambda = [=](const Vertex<T>& p) { return p.getID() == vID; };
 	if (m_vertArr.size() > BIG_SIZE)
 	{
-		auto it = std::find(std::execution::par_unseq,
+		auto it = std::find_if(std::execution::par_unseq,
 			m_vertArr.begin(), m_vertArr.end(), lambda);
+		return *it;
 	}
 	else
 	{
-		auto it = std::find(m_vertArr.begin(), m_vertArr.end(), lambda);
+		auto it = std::find_if(m_vertArr.begin(), m_vertArr.end(), lambda);
+		return *it;
 	}
-	return *it;
 }
 
 template<typename T>
@@ -121,12 +123,12 @@ conv::Face conv::Mesh3D<T>::getFace(uint64_t fID) const
 	auto lambda = [](const Face& p) { return p.getID() == fID; };
 	if (m_faceArr.size() > BIG_SIZE)
 	{
-		auto it = std::find(std::execution::par_unseq,
+		auto it = std::find_if(std::execution::par_unseq,
 			m_faceArr.begin(), m_faceArr.end(), lambda);
 	}
 	else
 	{
-		auto it = std::find(m_faceArr.begin(), m_faceArr.end(), lambda);
+		auto it = std::find_if(m_faceArr.begin(), m_faceArr.end(), lambda);
 	}
 	return *it;
 }
