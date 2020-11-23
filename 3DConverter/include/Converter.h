@@ -15,15 +15,15 @@ class conv::Converter
 	std::shared_ptr<Deserializer> m_des;
 	std::shared_ptr<Serializer>   m_ser;
 
-	template<typename T> static Mesh3D<T> object;
+	static Mesh3D<> mesh;
 
 public:
 	Converter();
-	Converter(std::shared_ptr<Deserializer> meshReader);
-	Converter(std::shared_ptr<Deserializer> meshReader, std::shared_ptr<Serializer> meshWriter);
+	Converter(const std::shared_ptr<Deserializer>& meshReader);
+	Converter(const std::shared_ptr<Deserializer>& meshReader, const std::shared_ptr<Serializer>& meshWriter);
 
-	void setDeserializer(const Deserializer& meshReader);
-	void setSerializer(const Serializer& meshWriter);
+	void setDeserializer(const std::shared_ptr<Deserializer>& meshReader);
+	void setSerializer(const std::shared_ptr<Serializer>& meshWriter);
 
 	std::shared_ptr<Serializer> getSerializer() const;
 	std::shared_ptr<Deserializer> getDeserializer() const;
