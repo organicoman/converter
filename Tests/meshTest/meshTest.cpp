@@ -252,5 +252,8 @@ namespace meshTest
 			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::FRAGMENT_SHD), L"default Construction should be empty!");
 			Assert::AreEqual(std::string{ "null" }, testMesh.listExtraFeatures(), L"default Construction should be empty!");
 		}
+
+		// FIX ME: TEST_METHOD(MeshIsPointInsideTest)
+		// FIX ME: TEST_METHOD(MeshTransform)
 	};
 }

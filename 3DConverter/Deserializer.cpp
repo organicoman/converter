@@ -49,7 +49,7 @@ std::string conv::Deserializer::streamReader(const std::string& filename, Mesh3D
 		if (!parsePattern(Line, dest))
 			return Line;
 	}
-	return {}; // empty string for success.
+	return std::string{}; // empty string for success.
 } 
 
 std::string conv::Deserializer::streamReader(const std::string & filename, Mesh3Df & dest)
@@ -86,8 +86,12 @@ bool conv::Deserializer::parsePattern(std::string& inputLine, Mesh3D<>& dest) co
 		auto tagPos = splitPatern.prev_word(); //get last word 
 		splitLine += std::stoul(tagPos);
 		// seek a match between text at position tagPos and the value of available tags
-		if (keyVal->first != splitLine.curr_word())
+		if (keyVal->first != splitLine.next_word())
+		{
+			// reset the position to the beginning.
+			splitLine.rewind();
 			continue;
+		}
 		break; // else matched!
 	}
 	if (keyVal == m_allTagPattern.end())
@@ -132,12 +136,43 @@ void conv::Deserializer::tagPattern()
 			// append its position index to the end of 'pattern'
 			auto it = std::search(pattern.begin(), pattern.end(),
 				tag_str.begin(), tag_str.end());
-			size_t pos = pattern.begin() - it;
+			size_t pos = it - pattern.begin();
 			pattern.push_back(' '); // seperate this addition with a space
 			pattern += std::to_string(pos);
 
 			m_allTagPattern.insert({ tag, pattern });
 			m_parsers.insert({ tag, nullptr });
 		}
+	}
+}
+namespace conv
+{
+	std::string dumpTheJsonFile(Deserializer& self)
+	{
+		if (self.m_workerThread.joinable())
+			self.m_workerThread.join();
+
+		return self.m_jsonFile.dump();
+	}
+
+	std::unordered_set<std::string> dumpAllTags(Deserializer& self)
+	{
+		if (self.m_workerThread.joinable())
+			self.m_workerThread.join();
+
+		std::unordered_set<std::string> tags;
+		for (auto pairs : self.m_allTagPattern)
+			tags.insert(pairs.first);
+		return tags;
+	}
+	std::unordered_set<std::string> dumpAllPatterns(Deserializer& self)
+	{
+		if (self.m_workerThread.joinable())
+			self.m_workerThread.join();
+
+		std::unordered_set<std::string> patterns;
+		for (auto pairs : self.m_allTagPattern)
+			patterns.insert(pairs.second);
+		return patterns;
 	}
 }

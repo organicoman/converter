@@ -6,6 +6,7 @@
 #include <unordered_map> // std::unordered_map
 #include <functional>  // std::function
 #include <thread>  // std::thread
+#include <unordered_set>
 //---------------------------
 #include "Namespace.h"
 
@@ -87,6 +88,11 @@ protected:
 	virtual bool parsePattern(std::string& inputLine, Mesh3Df& dest) const;
 
 	bool dispatcher(const std::string& tag, const std::string& inputLine, Mesh3D<>& dest) const;
+private:
+	// friend functions for test purpose only
+	friend std::string dumpTheJsonFile(Deserializer& self);
+	friend std::unordered_set<std::string> dumpAllTags(Deserializer& self);
+	friend std::unordered_set<std::string> dumpAllPatterns(Deserializer& self);
 };
 #endif//DESERIALIZER_H
 

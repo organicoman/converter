@@ -134,7 +134,7 @@ namespace conv
 		{
 			self.end_pos = self.start;
 			self.rend_pos = self.start;
-			self.curr_word = {};
+			self.m_currWord = {};
 		}
 
 		template<typename Container>
