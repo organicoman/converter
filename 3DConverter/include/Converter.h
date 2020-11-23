@@ -7,6 +7,9 @@
 
 //-------------------------
 #include "Namespace.h"
+#include "Vertex.h"
+#include "Face.h"
+#include "Mesh3D.h"
 #include "Deserializer.h"
 #include "Serializer.h"
 
