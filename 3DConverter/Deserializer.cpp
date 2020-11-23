@@ -122,20 +122,17 @@ void conv::Deserializer::tagPattern()
 {
 	// FIX ME: handle the object files wich uses 'Section' to define the 3D Mesh Features
 
-	using namespace std::string_literals;
-	std::string tag_str = "%tag%"s;
-
 	for (auto obj : m_jsonFile)
 	{
-		if (obj.contains("tag"s))
+		if (obj.contains(conv::TAG))
 		{
-			auto tag = obj.at("tag"s).get<std::string>();
-			auto pattern = obj.at("pattern"s).get<std::string>();
+			auto tag = obj.at(conv::TAG).get<std::string>();
+			auto pattern = obj.at(conv::PATTERN).get<std::string>();
 
 			// find the string '%tag%' in pattern and,
 			// append its position index to the end of 'pattern'
 			auto it = std::search(pattern.begin(), pattern.end(),
-				tag_str.begin(), tag_str.end());
+				std::begin(conv::_TAG_), std::end(conv::_TAG_));
 			size_t pos = it - pattern.begin();
 			pattern.push_back(' '); // seperate this addition with a space
 			pattern += std::to_string(pos);

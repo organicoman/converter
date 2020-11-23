@@ -7,7 +7,7 @@
   "footer": "", // a text at the end of the file, can be anything
   "section": 
   {
-    "pattern": "", //expl: '<comment tag>----%tag%-----'
+    "patterns": "", //expl: '<comment tag>----%tag%-----'
     "tags": [] //available keyword: 
     //['comment', 'vertex', 'face', 'vertexNormal', 'vertexColor', 'textureCoord', 
     // 'vertexShader', 'geometryShader', 'fragmentShader']                  

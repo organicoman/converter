@@ -21,11 +21,39 @@ namespace conv
 	enum shader_e {VERTEX_SHD, GEOMETRY_SHD, FRAGMENT_SHD};
 
 	enum feature_e {VERTEX, VNORMAL, VTEXTCOORD, VCOLOR, FACE};
-	constexpr auto vertex = u8"vertex";
+	/*constexpr auto vertex = u8"vertex";
 	constexpr auto normal = u8"vertexNormal";
 	constexpr auto face = u8"face";
 	constexpr auto textCoord = u8"textureCoord";
-	constexpr auto vertColor = u8"vertexColor";
+	constexpr auto vertColor = u8"vertexColor";*/
+
+	constexpr auto HEADER = u8"header";
+	constexpr auto FOOTER = u8"footer";
+	constexpr auto SECTION = u8"section";
+	constexpr auto PATTERNS = u8"patterns";
+	constexpr auto TAGS = u8"tags";
+	constexpr auto TAG = u8"tag";
+	constexpr auto PATTERN = u8"pattern";
+
+	const std::string _TAG_{ "%tag%" };
+	const std::string _ID_{ "%id%" };
+	const std::string _X_{ "%x%" };
+	const std::string _Y_{ "%y%" };
+	const std::string _Z_{ "%z%" };
+	const std::string _ANY_{ "%?%" };
+	const std::string _I_{ "%i%" };
+	const std::string _J_{ "%j%" };
+	const std::string _K_{ "%k%" };
+	const std::string _U_{ "%u%" };
+	const std::string _V_{ "%v%" };
+	const std::string _R_{ "%r%" };
+	const std::string _G_{ "%g%" };
+	const std::string _B_{ "%b%" };
+	const std::string _A_{ "%a%" };
+	const std::string _V1_{ "%vid1%" };
+	const std::string _V2_{ "%vid2%" };
+	const std::string _V3_{ "%vid3%" };
+
 
 	enum RET_CODE {REPLACED = -1, ADDED = 1};
 	
@@ -218,7 +246,7 @@ namespace conv
 				}
 			}
 			rend_pos = end_pos;
-			while (*end_pos != m_sep and end_pos != std::end(m_c))
+			while (end_pos != std::end(m_c) and *end_pos != m_sep)
 				end_pos = std::next(end_pos);
 
 			// if the container doesn't contain the separator then return empty

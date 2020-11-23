@@ -28,36 +28,77 @@ void conv::Serializer::streamWriter(const Mesh3D<>& mesh, std::ostream& dest)
 	// make sure the worker thread finished populating the hash Table
 	if(m_workerThread.joinable())
 		m_workerThread.join();
-	using namespace std::string_literals;
+
 	// stamp header
-	if (m_jsonFile.contains("header"))
-		dest << m_jsonFile.at("header").get<std::string>() << '\n';
+	if (m_jsonFile.contains(conv::HEADER))
+	{
+		auto t = m_jsonFile.at(conv::HEADER).get<std::string>();
+		if (!t.empty())
+			dest << t << '\n';
+	}
+		 
 
 	// if `section` exists in json file layout then stamp the output according to it
-	if (m_jsonFile.contains("section"))
+	if (m_jsonFile.contains(conv::SECTION))
 	{
-		json jSection = m_jsonFile.at("section");
-		auto pattern = jSection.at("pattern").get<std::string>();
-		json jTags = jSection.at("tags");
+		json jSection = m_jsonFile.at(conv::SECTION);
+		auto pattern = jSection.at(conv::PATTERNS).get<std::string>();
+		json jTags = jSection.at(conv::TAGS);
 		
 		splitter<std::string> findTag(pattern, '%', std::begin(pattern));
 		std::string prefix = findTag.next_word();
 		std::string suffix = (findTag + 2).curr_word();
 		for (auto tag : jTags)
 		{
-			// the callback which print the mesh features
-			stamper_t meshPrint = m_stampers.at(tag.get<std::string>());
-			if (prefix.empty())
+			// find the json object in the template file corresponding to this section tag
+			auto objIt = m_jsonFile.find(tag.get<std::string>());
+			if (objIt == m_jsonFile.end())
+				continue;
+			json sectionObj = *objIt;
+			
+			// in this section find the tag , expl: "tag":"v"
+			// then the callback which print the mesh features
+			auto secTagIt = sectionObj.find(conv::TAG);
+			if (secTagIt == sectionObj.end())
+				continue;
+			auto sectionTag = secTagIt->get<std::string>();
+			
+			auto it = m_stampers.find(sectionTag);
+			if (it == m_stampers.end())
+				continue;
+
+			stamper_t meshPrint = nullptr;
+			meshPrint = it->second;
+			if (meshPrint == nullptr)
+				continue;
+
+			if (prefix.empty() && !pattern.empty())
 				dest << pattern << '\n';
 			else
 				dest << prefix << tag.get<std::string>() << suffix << '\n';
-			auto tmpPat = m_allTagPattern.at(tag.get<std::string>());
+			// find the pattern
+			auto tmpPat = m_allTagPattern.at(sectionTag);
 			meshPrint(mesh, tmpPat, dest);
 		}
 	}
+	else // there are no sectin defined in the json tamplate file
+		// then for each tag found call the stamper associated
+	{
+		for (auto& tagPat : m_allTagPattern)
+		{
+			auto meshPrint = m_stampers.at(tagPat.first);
+			if (meshPrint == nullptr)
+				continue;
+			meshPrint(mesh, tagPat.second, dest);
+		}
+	}
 	// stamp footer
-	if (m_jsonFile.contains("footer"))
-		dest << m_jsonFile.at("footer").get<std::string>() <<'\n';
+	if (m_jsonFile.contains(conv::FOOTER))
+	{
+		auto t = m_jsonFile.at(conv::FOOTER).get<std::string>();
+		if (!t.empty())
+			dest << t << '\n';
+	}
 
 	return;
 }
@@ -91,13 +132,45 @@ void conv::Serializer::tagPattern()
 
 	for (auto obj : m_jsonFile)
 	{
-		if (obj.contains("tag"s))
+		if (obj.contains(conv::TAG))
 		{
-			auto tag = obj.at("tag"s).get<std::string>();
-			auto pattern = obj.at("pattern"s).get<std::string>();
+			auto tag = obj.at(conv::TAG).get<std::string>();
+			auto pattern = obj.at(conv::PATTERN).get<std::string>();
 
 			m_allTagPattern.insert({ tag, pattern });
 			m_stampers.insert({ tag, nullptr });
 		}
+	}
+}
+
+namespace conv
+{
+	std::string dumpTheJsonFile(Serializer& self)
+	{
+		if (self.m_workerThread.joinable())
+			self.m_workerThread.join();
+
+		return self.m_jsonFile.dump();
+	}
+
+	std::unordered_set<std::string> dumpAllTags(Serializer& self)
+	{
+		if (self.m_workerThread.joinable())
+			self.m_workerThread.join();
+
+		std::unordered_set<std::string> tags;
+		for (auto& pairs : self.m_allTagPattern)
+			tags.insert(pairs.first);
+		return tags;
+	}
+	std::unordered_set<std::string> dumpAllPatterns(Serializer& self)
+	{
+		if (self.m_workerThread.joinable())
+			self.m_workerThread.join();
+
+		std::unordered_set<std::string> patterns;
+		for (auto& pairs : self.m_allTagPattern)
+			patterns.insert(pairs.second);
+		return patterns;
 	}
 }

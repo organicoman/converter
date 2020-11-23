@@ -7,6 +7,7 @@
 #include <thread>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 //------------------------------
 #include "Namespace.h"
 
@@ -72,7 +73,11 @@ protected:
 	 * @returns: nothing
 	 */
 	virtual void tagPattern();
-
+private:
+	// friend functions for test purpose only
+	friend std::string dumpTheJsonFile(Serializer& self);
+	friend std::unordered_set<std::string> dumpAllTags(Serializer& self);
+	friend std::unordered_set<std::string> dumpAllPatterns(Serializer& self);
 };
 #endif//SERIALIZER_H
 

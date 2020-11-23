@@ -1,0 +1,53 @@
+{
+  ".ext": ".tst",
+  "type": "text",
+  "version": "1.0",
+  "backwardCompatible": true,
+  "header": "",
+  "footer": "",
+  "comment": {
+    "pattern": "%tag% %?%",
+    "tag": "#"
+  },
+  "vertex": {
+    "pattern": "%tag% %id% %x% %y% %z%",
+    "tag": "v",
+    "type": "double",
+    "defaultVal": 0.0
+  },
+  "face": {
+    "pattern": "%tag% %id% %vId1% %vId2% %vId3%",
+    "tag": "f",
+    "axisConvention": "RighHand"
+  },
+  "vertexNormal": {
+    "pattern": "%tag% %id% %i% %j% %k%",
+    "tag": "vn",
+    "type": "float",
+    "defaultVal": 0.0
+  },
+  "vertexColor": {
+    "pattern": "%tag% %id% %r% %g% %b% %a%",
+    "tag": "vc",
+    "type": "char",
+    "defaultVal": 0
+  },
+  "textureCoord": {
+    "pattern": "%tag% %id% %u% %v%",
+    "tag": "vtx",
+    "type": "double",
+    "defaultVal": 0.0
+  },
+  "vertexShader": {
+    "version": "1.2",
+    "sourceCode": "shader code"
+  },
+  "geometryShader": {
+    "version": "1.3",
+    "sourceCode": "shader code"
+  },
+  "fragmentShader": {
+    "version": "1.4",
+    "sourceCode": "shader code"
+  }
+}
