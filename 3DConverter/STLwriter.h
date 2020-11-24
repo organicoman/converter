@@ -10,19 +10,28 @@ void BinaryWriter(const conv::Mesh3D<>& mesh, const std::string& pat, std::ostre
 	// first the 80 byte header
 	std::string header{80,'#'};
 	uint32_t nTris = mesh.Fsize();
-	out << nTris;
+	out.write(header.c_str(), header.size());
+	out.write((const char*) &nTris, 4);
 	for (auto fIt = mesh.fBegin(); fIt != mesh.fEnd(); ++fIt)
 	{
 		auto n = fIt->second.normal(mesh);
 		auto vIDset = fIt->second.getVertIDs();
 		for (auto Vid: vIDset)
 		{
-			out << n[0] << n[1] << n[2];
+			out.write((const char*)&n[0], 4);
+			out.write((const char*)&n[1], 4);
+			out.write((const char*)&n[2], 4);
 			auto v = mesh.getVertex(Vid);
-			out << v.getPos_X() << v.getPos_Y() << v.getPos_Z();
+			double x = v.getPos_X();
+			double y = v.getPos_Y();
+			double z = v.getPos_Z();
+			out.write((const char*)&x , 4);
+			out.write((const char*)&y , 4);
+			out.write((const char*)&z , 4);
 		}
 	}
-	out << uint16_t(0x0000);
+	uint32_t end = 0;
+	out.write((const char*)end, 2);
 
 	return;
 }

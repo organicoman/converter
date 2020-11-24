@@ -33,7 +33,7 @@ bool OBJvertex(const std::string& pattern, const std::string& input, conv::Mesh3
     return true;
 }
 
-// face reader tag = 'f' v/vt/vn - v/vt - v//vn
+// face reader tag = 'f' cases {v/vt/vn , v/vt , v//vn , v }
 bool OBJface(const std::string& pattern, const std::string& input, conv::Mesh3D<>& dest)
 {
     conv::splitter<std::string> sIn{ input, ' ', input.begin() };
@@ -50,26 +50,38 @@ bool OBJface(const std::string& pattern, const std::string& input, conv::Mesh3D<
         conv::splitter<std::string> sWord(word, '/', word.begin());
         if (sPat.curr_word() == conv::_V1_)
         {
-            v1 = std::stoi(sWord.next_word());
+            if (sWord.next_word().empty() && sWord.isFullsize())
+                v1 = std::stoi(word);
+            else
+                v1 = std::stoi(sWord.curr_word());
+
             if (v1 < 0)
                 v1 = totalVerts + v1;
         }
 
         if (sPat.curr_word() == conv::_V2_)
         {
-            v2 = std::stoi(sIn.curr_word());
+            if (sWord.next_word().empty() && sWord.isFullsize())
+                v2 = std::stoi(word);
+            else
+                v2 = std::stoi(sWord.curr_word());
+
             if (v2 < 0)
                 v2 = totalVerts + v2;
         }
 
         if (sPat.curr_word() == conv::_V3_)
         {
-            v3 = std::stoi(sIn.curr_word());
+            if (sWord.next_word().empty() && sWord.isFullsize())
+                v3 = std::stoi(word);
+            else
+                v3 = std::stoi(sWord.curr_word());
+
             if (v3 < 0)
                 v3 = totalVerts + v3;
         }
 
-        sIn.next_word();
+        word = sIn.next_word();
     }
 
     // adding the vertices, CCW
@@ -78,7 +90,13 @@ bool OBJface(const std::string& pattern, const std::string& input, conv::Mesh3D<
     // if there is a fourth => vertex parse it
     if (!sIn.curr_word().empty())
     {
-        v4 = std::stoi(sIn.curr_word());
+        auto word = sIn.curr_word();
+        conv::splitter<std::string> sWord(word, '/', word.begin());
+        if (sWord.next_word().empty() && sWord.isFullsize())
+            v4 = std::stoi(word);
+        else
+            v4 = std::stoi(sWord.curr_word());
+
         if (v4 < 0)
             v4 = totalVerts + v4;
         dest.addFace(conv::Face{++id,(uint64_t) v1, (uint64_t)v3, (uint64_t)v4});

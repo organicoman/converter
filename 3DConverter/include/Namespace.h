@@ -50,9 +50,9 @@ namespace conv
 	const std::string _G_{ "%g%" };
 	const std::string _B_{ "%b%" };
 	const std::string _A_{ "%a%" };
-	const std::string _V1_{ "%vid1%" };
-	const std::string _V2_{ "%vid2%" };
-	const std::string _V3_{ "%vid3%" };
+	const std::string _V1_{ "%vId1%" };
+	const std::string _V2_{ "%vId2%" };
+	const std::string _V3_{ "%vId3%" };
 
 
 	enum RET_CODE {REPLACED = -1, ADDED = 1};

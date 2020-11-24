@@ -51,23 +51,23 @@ void conv::Converter::Read(const std::string& srcFile)
 
 void conv::Converter::Write(const std::string& destFile) const
 {
-	auto Ext_it = m_SerializerJsonTemplate.find(".ext");
-	auto Type_it = m_SerializerJsonTemplate.find("type");
+	auto Ext = m_SerializerJsonTemplate.find(".ext");
+	auto Type = m_SerializerJsonTemplate.find("type");
 	splitter<std::string> extSplit(destFile, '.', destFile.begin());
 	// check if same extension
 	// extension in `destFile` is stronger
 	auto name = extSplit.next_word();
 	if (extSplit.next_word().empty())
 	{
-		if (Ext_it != m_SerializerJsonTemplate.end())
-			name += Ext_it->at(".ext").get<std::string>();
+		if (Ext != m_SerializerJsonTemplate.end())
+			name += *Ext;
 	}
 	else
 		name = destFile;
 
 	std::ios_base::openmode mode = std::ios_base::out;
-	if (Type_it != m_SerializerJsonTemplate.end())
-		if(Type_it->at("type").get<std::string>() == "binary")
+	if (Type != m_SerializerJsonTemplate.end())
+		if(*Type == "binary")
 			mode |= std::ios_base::binary;
 	std::ofstream out{ name, mode };
 

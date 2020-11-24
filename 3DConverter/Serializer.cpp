@@ -95,9 +95,9 @@ void conv::Serializer::streamWriter(const Mesh3D<>& mesh, std::ostream& dest)
 	// stamp footer
 	if (m_jsonFile.contains(conv::FOOTER))
 	{
-		auto t = m_jsonFile.at(conv::FOOTER).get<std::string>();
-		if (!t.empty())
-			dest << t << '\n';
+		auto it = m_jsonFile.find(conv::FOOTER);
+		if (it != m_jsonFile.end())
+			dest << *it << '\n';
 	}
 
 	return;

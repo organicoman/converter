@@ -33,8 +33,8 @@ int main()
 	des->addParser("vt", objTexCoordParser);
 	des->addParser("f", objFaceParser);
 
-	cnv.Read("example.obj");
-	cnv.Write("example.stl");
+	cnv.Read("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\pumpkin_example.obj");
+	cnv.Write("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\example.stl");
 
 	return 0;
 
