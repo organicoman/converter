@@ -75,7 +75,7 @@ conv::RET_CODE conv::Deserializer::addParser(const std::string & tag, parser_t p
 	return ret;
 }
 
-bool conv::Deserializer::parsePattern(std::string& inputLine, Mesh3D<>& dest) const 
+bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3D<>& dest) const 
 {
 	conv::splitter<std::string> splitLine(inputLine, ' ', std::begin(inputLine));
 	auto keyVal = m_allTagPattern.begin();
@@ -100,7 +100,7 @@ bool conv::Deserializer::parsePattern(std::string& inputLine, Mesh3D<>& dest) co
 	return dispatcher(keyVal->first, inputLine, dest);
 }
 
-bool conv::Deserializer::parsePattern(std::string& inputLine, Mesh3Df & dest) const 
+bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3Df & dest) const 
 {
 	// becarful it's a C cast!
 	return parsePattern(inputLine, (Mesh3D<>&) dest);
@@ -158,7 +158,7 @@ namespace conv
 			self.m_workerThread.join();
 
 		std::unordered_set<std::string> tags;
-		for (auto pairs : self.m_allTagPattern)
+		for (auto& pairs : self.m_allTagPattern)
 			tags.insert(pairs.first);
 		return tags;
 	}
@@ -168,7 +168,7 @@ namespace conv
 			self.m_workerThread.join();
 
 		std::unordered_set<std::string> patterns;
-		for (auto pairs : self.m_allTagPattern)
+		for (auto& pairs : self.m_allTagPattern)
 			patterns.insert(pairs.second);
 		return patterns;
 	}

@@ -33,14 +33,16 @@ public:
 
 	bool isVertexEmpty() const { return !m_vertArr.size(); }
 	void clearVertex() { m_vertArr.clear(); }
+	size_t Vsize() const { return m_vertArr.size(); }
 
 	bool isFaceEmpty() const { return !m_faceArr.size(); }
 	void clearFaces() { m_faceArr.clear(); }
+	size_t Fsize() const { return m_faceArr.size(); }
 
 	inline void addVertex(const Vertex<T>& ver);
 	inline void addVertex(Vertex<T>&& ver);
 
-    Vertex<T> getVertex(uint64_t vID) const;
+    Vertex<T>& getVertex(uint64_t vID) const;
 
 	inline void addFace(const Face& f);
 	inline void addFace(Face&& f);
@@ -48,13 +50,13 @@ public:
 
 
 	inline void addShader(shader_e type, const std::string& source);
-	inline std::string getShader(shader_e type) const;
+	inline std::string& getShader(shader_e type) const;
 
 	template<typename U>
 	inline void addFeature(const std::string& key, U&& value);
 
 	template<typename U> 
-	inline U getFeature(const std::string& key) const;
+	inline U& getFeature(const std::string& key) const;
 	std::string listExtraFeatures() const;
 	
 	inline double area() const;
@@ -91,7 +93,7 @@ inline void conv::Mesh3D<T>::addVertex(Vertex<T>&& ver)
 }
 
 template<typename T>
-conv::Vertex<T> conv::Mesh3D<T>::getVertex(uint64_t vID) const
+conv::Vertex<T>& conv::Mesh3D<T>::getVertex(uint64_t vID) const
 {
 	auto vIt = m_vertArr.find(vID);
 	if (vIt == m_vertArr.end())
@@ -140,7 +142,7 @@ inline void conv::Mesh3D<T>::addShader(shader_e type, const std::string& source)
 }
 
 template<typename T>
-inline std::string conv::Mesh3D<T>::getShader(shader_e type) const
+inline std::string& conv::Mesh3D<T>::getShader(shader_e type) const
 {
 	switch (type)
 	{
@@ -169,7 +171,7 @@ inline void conv::Mesh3D<T>::addFeature(const std::string& key, U&& value)
 
 template<typename T>
 template<typename U>
-inline U conv::Mesh3D<T>::getFeature(const std::string& key) const
+inline U& conv::Mesh3D<T>::getFeature(const std::string& key) const
 {
 	auto val = m_extrafeatures.at(key).get<U>();
 	return val;

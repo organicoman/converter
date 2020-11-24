@@ -68,5 +68,11 @@
     <ClInclude Include="include\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OBJ_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="STLwriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

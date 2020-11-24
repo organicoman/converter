@@ -4,7 +4,8 @@
 #include <iostream>
 #include "include/Converter.h"
 #include "include/Factory.h"
-
+// *.cpp :just for the purpose of testing.
+#include "OBJ_reader.cpp"
 
 int main()
 {

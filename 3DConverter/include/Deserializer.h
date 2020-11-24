@@ -84,8 +84,8 @@ protected:
 	 * @param dest: the 3D Mesh container where to save the data
 	 * @returns: true for success, false otherwise
 	 */
-	virtual bool parsePattern(std::string& inputLine, Mesh3D<>& dest) const;
-	virtual bool parsePattern(std::string& inputLine, Mesh3Df& dest) const;
+	virtual bool parsePattern(const std::string& inputLine, Mesh3D<>& dest) const;
+	virtual bool parsePattern(const std::string& inputLine, Mesh3Df& dest) const;
 
 	bool dispatcher(const std::string& tag, const std::string& inputLine, Mesh3D<>& dest) const;
 private:

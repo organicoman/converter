@@ -200,6 +200,8 @@
     <ClInclude Include="include\Namespace.h" />
     <ClInclude Include="include\Serializer.h" />
     <ClInclude Include="include\Vertex.h" />
+    <ClInclude Include="OBJ_reader.h" />
+    <ClInclude Include="STLwriter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,10 +17,10 @@ using json = nlohmann::json;
 
 namespace conv
 {
-	constexpr size_t BIG_SIZE = 500'000;
 	enum shader_e {VERTEX_SHD, GEOMETRY_SHD, FRAGMENT_SHD};
 
 	enum feature_e {VERTEX, VNORMAL, VTEXTCOORD, VCOLOR, FACE};
+	
 	/*constexpr auto vertex = u8"vertex";
 	constexpr auto normal = u8"vertexNormal";
 	constexpr auto face = u8"face";
@@ -76,8 +76,8 @@ namespace conv
 	template<typename T= double> class Mesh3D;
 	using Mesh3Df = Mesh3D<float>;
 
-	using parser_t = std::function<bool(const std::string&, const std::string&, Mesh3D<>&)>;
-	using stamper_t = std::function<void(const Mesh3D<>&, const std::string&, std::ostream&)>;
+	using parser_t = std::function<bool(const std::string& pat, const std::string& in, Mesh3D<>& des)>;
+	using stamper_t = std::function<void(const Mesh3D<>& src, const std::string& pat, std::ostream& des)>;
 	class Converter;
 
 	struct Factory;
@@ -176,7 +176,8 @@ namespace conv
 	class splitter
 	{
 		using v_t = typename Container::value_type;
-		using C_iter = typename Container::iterator;
+		using C_iter = typename Container::const_iterator;
+		using C_iterTag = typename Container::iterator;
 		using C_diff_t = typename Container::difference_type;
 
 		const Container& m_c;
@@ -186,11 +187,11 @@ namespace conv
 		C_iter rend_pos;
 		Container m_currWord;
 			   
-		friend Container ImplDetail::prev_word<Container>(splitter<Container>& self, C_iter);
-		friend void ImplDetail::reset<Container>(splitter<Container>& self, C_iter);
+		friend Container ImplDetail::prev_word<Container>(splitter<Container>& self, C_iterTag);
+		friend void ImplDetail::reset<Container>(splitter<Container>& self, C_iterTag);
 	public:
 		splitter() = delete;
-		splitter(const Container& C, v_t&& sep, const C_iter& beg):
+		splitter(const Container& C, v_t&& sep, C_iter beg):
 			m_c(C), m_sep(sep), start(beg), end_pos(beg), rend_pos(beg), m_currWord()
 		{
 		}
@@ -226,7 +227,7 @@ namespace conv
 
 		void rewind()
 		{
-			return ImplDetail::reset(*this, C_iter{});
+			return ImplDetail::reset(*this, C_iterTag{});
 		}
 
 		Container next_word()
@@ -262,7 +263,7 @@ namespace conv
 		
 		Container prev_word()
 		{
-			return ImplDetail::prev_word(*this, C_iter{});
+			return ImplDetail::prev_word(*this, C_iterTag{});
 		}
 
 		splitter& operator >> (Container& dest)
