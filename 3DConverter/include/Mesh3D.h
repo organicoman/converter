@@ -15,8 +15,10 @@
 template<typename T>
 class conv::Mesh3D
 {
+public:
 	using VArr_t = std::unordered_map<uint64_t, conv::Vertex<T>>;
 	using FArr_t = std::unordered_map<uint64_t, conv::Face>;
+private:
 	uint64_t               m_id;
 	VArr_t                 m_vertArr;
 	FArr_t                 m_faceArr;
@@ -38,6 +40,9 @@ public:
 	bool isFaceEmpty() const { return !m_faceArr.size(); }
 	void clearFaces() { m_faceArr.clear(); }
 	size_t Fsize() const { return m_faceArr.size(); }
+
+	FArr_t::const_iterator fBegin() const;
+	FArr_t::const_iterator fEnd() const;
 
 	inline void addVertex(const Vertex<T>& ver);
 	inline void addVertex(Vertex<T>&& ver);
@@ -78,6 +83,18 @@ template<typename T>
 inline uint64_t conv::Mesh3D<T>::getID() const
 {
 	return m_id;
+}
+
+template<typename T>
+inline conv::Mesh3D<T>::FArr_t::const_iterator conv::Mesh3D<T>::fBegin() const
+{
+	return m_faceArr.cbegin();
+}
+
+template<typename T>
+inline conv::Mesh3D<T>::FArr_t::const_iterator conv::Mesh3D<T>::fEnd() const
+{
+	return m_faceArr.cend();
 }
 
 template<typename T>
