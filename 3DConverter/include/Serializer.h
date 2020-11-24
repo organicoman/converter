@@ -63,6 +63,11 @@ public:
 	 */
 	conv::RET_CODE addStamper(const std::string & tag, stamper_t stamper);
 
+	/*
+	 * @returns: the json template file
+	 */
+	json getJson() const;
+
 	virtual ~Serializer() = default;
 
 protected:

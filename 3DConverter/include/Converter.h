@@ -18,7 +18,10 @@ class conv::Converter
 	std::shared_ptr<Deserializer> m_des;
 	std::shared_ptr<Serializer>   m_ser;
 
-	static Mesh3D<> mesh;
+	json m_SerializerJsonTemplate;
+	json m_DeserializerJsonTemplate;
+
+	Mesh3D<> mesh{};
 
 public:
 	Converter();
@@ -30,6 +33,9 @@ public:
 
 	std::shared_ptr<Serializer> getSerializer() const;
 	std::shared_ptr<Deserializer> getDeserializer() const;
+
+	void Read(const std::string& srcFile);
+	void Write(const std::string& destFile) const;
 
 	void transformMesh(const Matrix<>& mat);
 	bool isInside(const pos3D<>& point) const;

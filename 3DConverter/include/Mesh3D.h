@@ -47,7 +47,8 @@ public:
 	inline void addVertex(const Vertex<T>& ver);
 	inline void addVertex(Vertex<T>&& ver);
 
-    Vertex<T>& getVertex(uint64_t vID) const;
+    Vertex<T> getVertex(uint64_t vID) const;
+	Vertex<T>& getVertex(uint64_t vID);
 
 	inline void addFace(const Face& f);
 	inline void addFace(Face&& f);
@@ -110,11 +111,25 @@ inline void conv::Mesh3D<T>::addVertex(Vertex<T>&& ver)
 }
 
 template<typename T>
-conv::Vertex<T>& conv::Mesh3D<T>::getVertex(uint64_t vID) const
+conv::Vertex<T> conv::Mesh3D<T>::getVertex(uint64_t vID) const
 {
 	auto vIt = m_vertArr.find(vID);
 	if (vIt == m_vertArr.end())
 		return {std::numeric_limits<uint64_t>::max()};
+	return vIt->second;
+}
+
+template<typename T>
+inline conv::Vertex<T>& conv::Mesh3D<T>::getVertex(uint64_t vID)
+{
+	// a `get` which adds a vertex if it doesn't exist!!
+	auto vIt = m_vertArr.find(vID);
+	if (vIt == m_vertArr.end())
+	{
+		Vertex<T> v{ vID };
+		addVertex(v);
+		return m_vertArr.at(vID);
+	}
 	return vIt->second;
 }
 

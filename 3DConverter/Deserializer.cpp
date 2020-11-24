@@ -75,6 +75,11 @@ conv::RET_CODE conv::Deserializer::addParser(const std::string & tag, parser_t p
 	return ret;
 }
 
+json conv::Deserializer::getJson() const
+{
+	return m_jsonFile;
+}
+
 bool conv::Deserializer::parsePattern(const std::string& inputLine, Mesh3D<>& dest) const 
 {
 	conv::splitter<std::string> splitLine(inputLine, ' ', std::begin(inputLine));

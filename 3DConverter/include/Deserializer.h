@@ -64,6 +64,11 @@ public:
 	 */
 	conv::RET_CODE addParser(const std::string& tag, parser_t parser);
 
+	/*
+	 * @returns: the json template file
+	 */
+	json getJson() const;
+
 	virtual ~Deserializer() = default;
 
 protected:

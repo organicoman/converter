@@ -1,0 +1,33 @@
+{
+  ".ext": ".obj",
+  "type": "text",
+  "version": 3.0,
+  "backwardCompatible": true,
+  "comment": {
+    "pattern": "%tag% %?%",
+    "tag": "#"
+  },
+  "vertex": {
+    "pattern": "%tag% %x% %y% %z%",
+    "tag": "v",
+    "type": "float",
+    "defaultVal": 0.0
+  },
+  "face": {
+    "pattern": "%tag% %vId1% %vId2% %vId3%",
+    "tag": "f",
+    "axisConvention": "RighHand"
+  },
+  "vertexNormal": {
+    "pattern": "%tag% %i% %j% %k%",
+    "tag": "vn",
+    "type": "float",
+    "defaultVal": 0.0
+  },
+  "textureCoord": {
+    "pattern": "%tag% %u% %v%",
+    "tag": "vt",
+    "type": "float",
+    "defaultVal": 0.0
+  }
+}

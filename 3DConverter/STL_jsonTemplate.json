@@ -1,0 +1,14 @@
+{
+  ".ext": ".stl",
+  "type": "binary",
+  "version": 1.0,
+  "backwardCompatible": true,
+  "header": "################################################################################",
+  "footer":  0,
+  "facets": {
+    "pattern": "",
+    "tag": "facet",
+    "type": "float",
+    "defaultVal": 0.0
+  }
+}

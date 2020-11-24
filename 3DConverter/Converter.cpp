@@ -1,31 +1,37 @@
 #include "include/Converter.h"
 #include "include/Mesh3D.h"
-
-conv::Mesh3D<> conv::Converter::mesh{};
+#include <fstream>
 
 conv::Converter::Converter():
-	m_des(nullptr), m_ser(nullptr)
+	m_des(nullptr), m_ser(nullptr), 
+	m_SerializerJsonTemplate{}, m_DeserializerJsonTemplate{}
 {
 }
 
 conv::Converter::Converter(const std::shared_ptr<Deserializer>& meshReader):
-	m_des(meshReader), m_ser(nullptr)
+	m_des(meshReader), m_ser(nullptr),
+	m_SerializerJsonTemplate{}
 {
+	m_DeserializerJsonTemplate = m_des->getJson();
 }
 
 conv::Converter::Converter(const std::shared_ptr<Deserializer>& meshReader, const std::shared_ptr<Serializer>& meshWriter):
 	m_des(meshReader), m_ser(meshWriter)
 {
+	m_DeserializerJsonTemplate = m_des->getJson();
+	m_SerializerJsonTemplate = m_ser->getJson();
 }
 
 void conv::Converter::setDeserializer(const std::shared_ptr<Deserializer>& meshReader)
 {
 	m_des = meshReader;
+	m_DeserializerJsonTemplate = m_des->getJson();
 }
 
 void conv::Converter::setSerializer(const std::shared_ptr<Serializer>& meshWriter)
 {
 	m_ser = meshWriter;
+	m_SerializerJsonTemplate = m_ser->getJson();
 }
 
 std::shared_ptr<conv::Serializer> conv::Converter::getSerializer() const
@@ -36,6 +42,36 @@ std::shared_ptr<conv::Serializer> conv::Converter::getSerializer() const
 std::shared_ptr<conv::Deserializer> conv::Converter::getDeserializer() const
 {
 	return m_des;
+}
+
+void conv::Converter::Read(const std::string& srcFile)
+{
+	m_des->streamReader(srcFile, mesh);
+}
+
+void conv::Converter::Write(const std::string& destFile) const
+{
+	auto Ext_it = m_SerializerJsonTemplate.find(".ext");
+	auto Type_it = m_SerializerJsonTemplate.find("type");
+	splitter<std::string> extSplit(destFile, '.', destFile.begin());
+	// check if same extension
+	// extension in `destFile` is stronger
+	auto name = extSplit.next_word();
+	if (extSplit.next_word().empty())
+	{
+		if (Ext_it != m_SerializerJsonTemplate.end())
+			name += Ext_it->at(".ext").get<std::string>();
+	}
+	else
+		name = destFile;
+
+	std::ios_base::openmode mode = std::ios_base::out;
+	if (Type_it != m_SerializerJsonTemplate.end())
+		if(Type_it->at("type").get<std::string>() == "binary")
+			mode |= std::ios_base::binary;
+	std::ofstream out{ name, mode };
+
+	m_ser->streamWriter(mesh, out);
 }
 
 void conv::Converter::transformMesh(const Matrix<>& mat)
