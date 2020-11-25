@@ -43,11 +43,17 @@ std::string conv::Deserializer::streamReader(const std::string& filename, Mesh3D
 	std::string Line;
 	while (std::getline(source, Line))
 	{
-		// for each line from the source file, scan it
-		// for patterns in the provided JSON template file, otherwise
-		// stop and return it to the caller for futher processing
-		if (!parsePattern(Line, dest))
-			return Line;
+		/* for each line from the source file, scan it
+		* for patterns in the provided JSON template file, otherwise
+		* stop and return it to the caller for futher processing
+		* its purpose is to allow derived class to call base class for default
+		* implementation and the derived class for special care*/
+		// DISABLED FOR NOW!!!
+		/*if (!parsePattern(Line, dest))
+			return Line;*/
+
+		// FIX ME: for now, just skip unknown patterns.
+		parsePattern(Line, dest);
 	}
 	return std::string{}; // empty string for success.
 } 
