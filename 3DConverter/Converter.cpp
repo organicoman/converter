@@ -1,6 +1,7 @@
 #include "include/Converter.h"
 #include "include/Mesh3D.h"
 #include <fstream>
+#include <sstream>
 
 conv::Converter::Converter():
 	m_des(nullptr), m_ser(nullptr), 
@@ -65,13 +66,15 @@ void conv::Converter::Write(const std::string& destFile) const
 	else
 		name = destFile;
 
-	std::ios_base::openmode mode = std::ios_base::out;
+	std::ios_base::openmode mode = std::ios_base::out | std::ios_base::trunc;
 	if (Type != m_SerializerJsonTemplate.end())
 		if(*Type == "binary")
 			mode |= std::ios_base::binary;
 	std::ofstream out{ name, mode };
 
 	m_ser->streamWriter(mesh, out);
+	if (out.is_open())
+		out.close();
 }
 
 void conv::Converter::transformMesh(const Matrix<>& mat)
