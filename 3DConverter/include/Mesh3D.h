@@ -56,7 +56,7 @@ public:
 
 
 	inline void addShader(shader_e type, const std::string& source);
-	inline std::string& getShader(shader_e type) const;
+	inline std::string getShader(shader_e type) const;
 
 	template<typename U>
 	inline void addFeature(const std::string& key, U&& value);
@@ -174,7 +174,7 @@ inline void conv::Mesh3D<T>::addShader(shader_e type, const std::string& source)
 }
 
 template<typename T>
-inline std::string& conv::Mesh3D<T>::getShader(shader_e type) const
+inline std::string conv::Mesh3D<T>::getShader(shader_e type) const
 {
 	switch (type)
 	{

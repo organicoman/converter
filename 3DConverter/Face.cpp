@@ -34,7 +34,8 @@ double conv::Face::area(const Mesh3D<>& mesh) const
 	double cy = vec1[2] * vec2[0] - vec1[0] * vec2[2];
 	double cz = vec1[0] * vec2[1] - vec1[1] * vec2[0];
 
-	return 0.5 * std::sqrt((cx * cx) + (cy * cy) + (cz * cz));
+	auto surf = std::sqrt((cx * cx) + (cy * cy) + (cz * cz));
+	return surf * 0.5;
 }
 
 conv::pos3D<> conv::Face::normal(const Mesh3D<>& mesh) const

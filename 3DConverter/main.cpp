@@ -34,7 +34,10 @@ int main()
 	des->addParser("f", objFaceParser);
 
 	cnv.Read("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\cube.obj");
-	cnv.Write("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\cube.stl");
+	//cnv.Write("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\cube.stl");
+
+	std::cout << "area = " << cnv.area() << '\n';
+	std::cout << "volume = " << cnv.volume() << '\n';
 
 	return 0;
 

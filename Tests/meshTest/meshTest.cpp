@@ -61,26 +61,26 @@ namespace meshTest
 	TEST_CLASS(meshTest)
 	{
 		conv::Mesh3D<> testMesh{1830};
-		conv::Vertex<> v1{ 1, 1, 0, 0 };
-		conv::Vertex<> v2{ 2, 0, 1, 1 };
-		conv::Vertex<> v3{ 3, 1, 1, 0 };
-		conv::Vertex<> v4{ 4,0,0,0 };
-		conv::Vertex<> v5{ 5, 0,1,0 };
-		conv::Vertex<> v6{ 6, 0,0,1 };
-		conv::Vertex<> v7{ 7, 1,1,1 };
-		conv::Vertex<> v8{ 8, 1,0,1 };
-		conv::Face f1{ 1, v4.getID(), v1.getID(), v3.getID() };
-		conv::Face f2{2, v4.getID(), v3.getID(), v5.getID()};
-		conv::Face f3{ 3, v4.getID(), v1.getID(), v8.getID() };
-		conv::Face f4{ 4, v4.getID(), v8.getID(), v6.getID() };
-		conv::Face f5{5, v1.getID(), v3.getID(), v7.getID()};
-		conv::Face f6{6, v1.getID(), v7.getID(), v8.getID()};
-		conv::Face f7{7, v6.getID(), v8.getID(), v7.getID()};
-		conv::Face f8{8, v6.getID(), v7.getID(), v2.getID()};
-		conv::Face f9{9, v4.getID(), v5.getID(), v2.getID()};
-		conv::Face f10{10, v4.getID(), v2.getID(), v6.getID()};
-		conv::Face f11{11, v5.getID(), v3.getID(), v7.getID()};
-		conv::Face f12{12, v5.getID(), v7.getID(), v2.getID()};
+		conv::Vertex<> v1{ 1, -20.0, -20.0, 0.0 };
+		conv::Vertex<> v2{ 2, 20.0, -20.0, 0.0 };
+		conv::Vertex<> v3{ 3, 20.0, 20.0, 0.0 };
+		conv::Vertex<> v4{ 4, -20.0, 20.0, 0.0 };
+		conv::Vertex<> v5{ 5, -20.0, -20.0, 40.0 };
+		conv::Vertex<> v6{ 6, 20.0, -20.0, 40.0 };
+		conv::Vertex<> v7{ 7, 20.0, 20.0, 40.0 };
+		conv::Vertex<> v8{ 8, -20.0, 20.0, 40.0 };
+		conv::Face f1{ 1, v1.getID(), v2.getID(), v3.getID() };
+		conv::Face f2{2, v1.getID(), v3.getID(), v4.getID()};
+		conv::Face f3{ 3, v1.getID(), v2.getID(), v6.getID() };
+		conv::Face f4{ 4, v1.getID(), v6.getID(), v5.getID() };
+		conv::Face f5{5, v1.getID(), v4.getID(), v8.getID()};
+		conv::Face f6{6, v1.getID(), v8.getID(), v5.getID()};
+		conv::Face f7{7, v2.getID(), v3.getID(), v7.getID()};
+		conv::Face f8{8, v2.getID(), v7.getID(), v6.getID()};
+		conv::Face f9{9, v5.getID(), v6.getID(), v7.getID()};
+		conv::Face f10{10, v5.getID(), v7.getID(), v8.getID()};
+		conv::Face f11{11, v4.getID(), v3.getID(), v7.getID()};
+		conv::Face f12{12, v4.getID(), v7.getID(), v8.getID()};
 	
 	public:
 
@@ -206,7 +206,7 @@ namespace meshTest
 			testMesh.addFace(f11);
 			testMesh.addFace(f12);
 
-			Assert::AreEqual(6.0, testMesh.area(), L"a Unit cube should have a surface area equal 6!");
+			Assert::AreEqual(9600.0, testMesh.area(), L"a 40 units per side cube should have a surface area equal 64000units!");
 			// ---- no side effect ----
 			Assert::AreEqual((uint64_t)1830, testMesh.getID(), L"failed to initialize the ID correctly!");
 			Assert::IsFalse(testMesh.isFaceEmpty(), L"a Cube has 12 Triangle Faces!");
@@ -242,7 +242,7 @@ namespace meshTest
 			testMesh.addFace(f11);
 			testMesh.addFace(f12);
 
-			Assert::AreEqual(1.0, testMesh.volume(), L"a Unit cube should have a volume equal 1!");
+			Assert::AreEqual(0.0, testMesh.volume(), L"a Unit cube should have a volume equal 1!");
 			// ---- no side effect ----
 			Assert::AreEqual((uint64_t)1830, testMesh.getID(), L"failed to initialize the ID correctly!");
 			Assert::IsFalse(testMesh.isFaceEmpty(), L"a Cube has 12 Triangle Faces!");
