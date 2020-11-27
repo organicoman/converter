@@ -33,11 +33,12 @@ int main()
 	des->addParser("vt", objTexCoordParser);
 	des->addParser("f", objFaceParser);
 
-	cnv.Read("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\cube.obj");
+	cnv.Read("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\pumpkin1.obj");
 	//cnv.Write("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\cube.stl");
 
 	std::cout << "area = " << cnv.area() << '\n';
 	std::cout << "volume = " << cnv.volume() << '\n';
+	std::cout << "is point (0,30,0) inside pumpkin? " << cnv.isInside({ 0.0,30.0 ,0.0 }) << '\n';
 
 	return 0;
 }
