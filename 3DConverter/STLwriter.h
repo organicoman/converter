@@ -10,7 +10,9 @@
 void BinaryWriter(const conv::Mesh3D<>& mesh, const std::string& pat, std::ostream& out)
 {
 	// make sure the ostream is open in binary mode
-	// first the 80 byte header
+	// first the 80 byte header; this header is not in the json template file
+	// because Serializer::streamWrite use a formatted output function to
+	// write to the output stream.
 	std::string buffer{"binary stl file by nadir "};
 	auto nTris = mesh.Fsize();
 	buffer.append( 54, ' ');

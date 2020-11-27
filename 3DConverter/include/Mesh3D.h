@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <execution>
 #include <limits>
-#include <vector>
+#include <iostream>
 //----------------------
 #include "Namespace.h"
 #include "Face.h"
@@ -255,6 +255,7 @@ template<typename T>
 inline double conv::Mesh3D<T>::volume() const
 {
 	// FIX ME:
+	std::cout << "Please implement me using the Signed volume of a Tetrahedron\n";
 	return 0.0;
 }
 
@@ -458,5 +459,6 @@ template<typename T>
 void conv::Mesh3D<T>::transformMesh(const Matrix<>& mat)
 {
 	// FIX ME:
+	std::cout << "a simple vector to matrix multiplication\n";
 }
 #endif // MESH3D_H

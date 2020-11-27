@@ -38,7 +38,8 @@ int main()
 
 	std::cout << "area = " << cnv.area() << '\n';
 	std::cout << "volume = " << cnv.volume() << '\n';
-	std::cout << "is point (0,30,0) inside pumpkin? " << cnv.isInside({ 0.0,30.0 ,0.0 }) << '\n';
+	std::cout << "is point (0,30,0) inside pumpkin should be true: check= " 
+		<< cnv.isInside({ 0.0,30.0 ,0.0 }) << '\n';
 
 	return 0;
 }
