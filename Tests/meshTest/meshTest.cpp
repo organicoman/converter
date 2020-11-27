@@ -242,7 +242,7 @@ namespace meshTest
 			testMesh.addFace(f11);
 			testMesh.addFace(f12);
 
-			Assert::AreEqual(0.0, testMesh.volume(), L"a Unit cube should have a volume equal 1!");
+			Assert::AreEqual(64000.0, testMesh.volume(), L"a Unit cube should have a volume equal 1!");
 			// ---- no side effect ----
 			Assert::AreEqual((uint64_t)1830, testMesh.getID(), L"failed to initialize the ID correctly!");
 			Assert::IsFalse(testMesh.isFaceEmpty(), L"a Cube has 12 Triangle Faces!");

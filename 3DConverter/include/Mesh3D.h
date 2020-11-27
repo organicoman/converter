@@ -71,6 +71,13 @@ public:
 	
 	inline double area() const;
 	inline double volume() const;
+
+	/*
+	 * Assumptions: 
+	 *  1- All normals are pointing in the correct direction such when viewing
+	 * the mesh in a 3D visualizer we don't see artifacts
+	 *  2- the mesh is water tight
+	 */
 	inline bool isInside(const pos3D<T>& point) const;
 
 	void transformMesh(const Matrix<>& mat);
@@ -254,9 +261,29 @@ inline double conv::Mesh3D<T>::area() const
 template<typename T>
 inline double conv::Mesh3D<T>::volume() const
 {
-	// FIX ME:
-	std::cout << "Please implement me using the Signed volume of a Tetrahedron\n";
-	return 0.0;
+	// volume using tetrahedron at origin
+	double volume = 0;
+	std::vector<pos3D<T>> verts;
+	const size_t X = 0;
+	const size_t Y = 1;
+	const size_t Z = 2;
+	
+	for (auto fpair : m_faceArr)
+	{
+		auto vertIDset = fpair.second.getVertIDs();
+		for (auto& vID : vertIDset)
+		{
+			verts.push_back(m_vertArr.at(vID).getPos());
+		}
+		volume += (1.0 / 6.0) * (-verts[2].at(X) * verts[1].at(Y) * verts[0].at(Z) +
+			verts[1].at(X) * verts[2].at(Y) * verts[0].at(Z) +
+			verts[2].at(X) * verts[0].at(Y) * verts[1].at(Z)
+			- verts[0].at(X) * verts[2].at(Y) * verts[1].at(Z)
+			- verts[1].at(X) * verts[0].at(Y) * verts[2].at(Z) +
+			verts[0].at(X) * verts[1].at(Y) * verts[2].at(Z));
+		verts.clear();
+	}
+	return volume;
 }
 
 template<typename T>
