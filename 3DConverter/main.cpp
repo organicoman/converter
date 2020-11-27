@@ -33,7 +33,7 @@ int main()
 	des->addParser("vt", objTexCoordParser);
 	des->addParser("f", objFaceParser);
 
-	cnv.Read("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\pumpkin1.obj");
+	cnv.Read("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\pumpkin.obj");
 	//cnv.Write("C:\\Users\\Nadir\\source\\Shapr3d\\3DConverter\\cube.stl");
 
 	std::cout << "area = " << cnv.area() << '\n';
