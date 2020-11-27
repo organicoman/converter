@@ -69,18 +69,18 @@ namespace meshTest
 		conv::Vertex<> v6{ 6, 20.0, -20.0, 40.0 };
 		conv::Vertex<> v7{ 7, 20.0, 20.0, 40.0 };
 		conv::Vertex<> v8{ 8, -20.0, 20.0, 40.0 };
-		conv::Face f1{ 1, v1.getID(), v2.getID(), v3.getID() };
-		conv::Face f2{2, v1.getID(), v3.getID(), v4.getID()};
+		conv::Face f1{ 1, v1.getID(), v3.getID(), v2.getID() };
+		conv::Face f2{ 2, v1.getID(), v4.getID(), v3.getID() };
 		conv::Face f3{ 3, v1.getID(), v2.getID(), v6.getID() };
 		conv::Face f4{ 4, v1.getID(), v6.getID(), v5.getID() };
-		conv::Face f5{5, v1.getID(), v4.getID(), v8.getID()};
-		conv::Face f6{6, v1.getID(), v8.getID(), v5.getID()};
-		conv::Face f7{7, v2.getID(), v3.getID(), v7.getID()};
-		conv::Face f8{8, v2.getID(), v7.getID(), v6.getID()};
-		conv::Face f9{9, v5.getID(), v6.getID(), v7.getID()};
-		conv::Face f10{10, v5.getID(), v7.getID(), v8.getID()};
-		conv::Face f11{11, v4.getID(), v3.getID(), v7.getID()};
-		conv::Face f12{12, v4.getID(), v7.getID(), v8.getID()};
+		conv::Face f5{ 5, v1.getID(), v8.getID(), v4.getID() };
+		conv::Face f6{ 6, v1.getID(), v5.getID(), v8.getID() };
+		conv::Face f7{ 7, v2.getID(), v3.getID(), v7.getID() };
+		conv::Face f8{ 8, v2.getID(), v7.getID(), v6.getID() };
+		conv::Face f9{ 9, v5.getID(), v6.getID(), v7.getID() };
+		conv::Face f10{ 10, v5.getID(), v7.getID(), v8.getID() };
+		conv::Face f11{ 11, v4.getID(), v7.getID(), v3.getID() };
+		conv::Face f12{ 12, v4.getID(), v8.getID(), v7.getID() };
 	
 	public:
 
@@ -253,7 +253,44 @@ namespace meshTest
 			Assert::AreEqual(std::string{ "null" }, testMesh.listExtraFeatures(), L"default Construction should be empty!");
 		}
 
-		// FIX ME: TEST_METHOD(MeshIsPointInsideTest)
+		TEST_METHOD(MeshIsPointInsideTest)
+		{
+			testMesh.addVertex(v1);
+			testMesh.addVertex(v2);
+			testMesh.addVertex(v3);
+			testMesh.addVertex(v4);
+			testMesh.addVertex(v5);
+			testMesh.addVertex(v6);
+			testMesh.addVertex(v7);
+			testMesh.addVertex(v8);
+
+			testMesh.addFace(f1);
+			testMesh.addFace(f2);
+			testMesh.addFace(f3);
+			testMesh.addFace(f4);
+			testMesh.addFace(f5);
+			testMesh.addFace(f6);
+			testMesh.addFace(f7);
+			testMesh.addFace(f8);
+			testMesh.addFace(f9);
+			testMesh.addFace(f10);
+			testMesh.addFace(f11);
+			testMesh.addFace(f11);
+			testMesh.addFace(f12);
+
+			conv::pos3D<> center{ 0, 0, 20 };
+			conv::pos3D<> point{ -30, 20, 0 };
+			Assert::IsTrue(testMesh.isInside(center), L"center of Cube should be inside it!");
+			Assert::IsFalse(testMesh.isInside(point), L"point is outside this Cube!");
+			// ---- no side effect ----
+			Assert::AreEqual((uint64_t)1830, testMesh.getID(), L"failed to initialize the ID correctly!");
+			Assert::IsFalse(testMesh.isFaceEmpty(), L"a Cube has 12 Triangle Faces!");
+			Assert::IsFalse(testMesh.isVertexEmpty(), L"a Cube has 8 vertices!");
+			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::VERTEX_SHD), L"default Construction should be empty!");
+			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::GEOMETRY_SHD), L"default Construction should be empty!");
+			Assert::AreEqual(std::string{}, testMesh.getShader(conv::shader_e::FRAGMENT_SHD), L"default Construction should be empty!");
+			Assert::AreEqual(std::string{ "null" }, testMesh.listExtraFeatures(), L"default Construction should be empty!");
+		}
 		// FIX ME: TEST_METHOD(MeshTransform)
 	};
 }

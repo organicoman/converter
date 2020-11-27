@@ -40,6 +40,5 @@ int main()
 	std::cout << "volume = " << cnv.volume() << '\n';
 
 	return 0;
-
 }
 

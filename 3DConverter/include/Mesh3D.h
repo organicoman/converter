@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <execution>
 #include <limits>
+#include <vector>
 //----------------------
 #include "Namespace.h"
 #include "Face.h"
@@ -26,6 +27,9 @@ private:
 	std::string            m_fragShader;
 	std::string            m_geomShader;
 	json                   m_extrafeatures;
+	std::pair<T, T>        m_minXmax;
+	std::pair<T, T>        m_minYmax;
+	std::pair<T, T>        m_minZmax;
 
 public:
 	Mesh3D() = default;
@@ -101,12 +105,32 @@ inline conv::Mesh3D<T>::FArr_t::const_iterator conv::Mesh3D<T>::fEnd() const
 template<typename T>
 inline void conv::Mesh3D<T>::addVertex(const Vertex<T>& ver)
 {
+	auto x = ver.getPos_X();
+	auto y = ver.getPos_Y();
+	auto z = ver.getPos_Z();
+	if (x > m_minXmax.second) m_minXmax.second = x;
+	if (x <= m_minXmax.first) m_minXmax.first = x;
+	if (y > m_minYmax.second) m_minYmax.second = y;
+	if (y <= m_minYmax.first) m_minYmax.first = y;
+	if (z > m_minZmax.second) m_minZmax.second = z;
+	if (z <= m_minZmax.first) m_minZmax.first = z;
+
 	m_vertArr.insert({ ver.getID(), ver });
 }
 
 template<typename T>
 inline void conv::Mesh3D<T>::addVertex(Vertex<T>&& ver)
 {
+	auto x = ver.getPos_X();
+	auto y = ver.getPos_Y();
+	auto z = ver.getPos_Z();
+	if (x > m_minXmax.second) m_minXmax.second = x;
+	if (x <= m_minXmax.first) m_minXmax.first = x;
+	if (y > m_minYmax.second) m_minYmax.second = y;
+	if (y <= m_minYmax.first) m_minYmax.first = y;
+	if (z > m_minZmax.second) m_minZmax.second = z;
+	if (z <= m_minZmax.first) m_minZmax.first = z;
+
 	m_vertArr.insert({ ver.getID(), std::move(ver) });
 }
 
@@ -237,8 +261,197 @@ inline double conv::Mesh3D<T>::volume() const
 template<typename T>
 inline bool conv::Mesh3D<T>::isInside(const pos3D<T>& point) const
 {
-	// FIX ME:
-	return false;
+	const T& pointX = point[0];
+	const T& pointY = point[1];
+	const T& pointZ = point[2];
+	// check bounding box
+	if (m_minXmax.second < pointX || pointX < m_minXmax.first) return false;
+	if (m_minYmax.second < pointY || pointY < m_minYmax.first) return false;
+	if (m_minYmax.second < pointZ || pointZ < m_minZmax.first) return false;
+	// the three plans algorithm by me
+	uint64_t posXface = 0;
+	uint64_t negXface = 0;
+	uint64_t posYface = 0;
+	uint64_t negYface = 0;
+	uint64_t posZface = 0;
+	uint64_t negZface = 0;
+	std::vector<Vertex<T>> vertices;
+	const size_t X = 0;
+	const size_t Y = 1;
+	const size_t Z = 2;
+	for (auto& f : m_faceArr)
+	{
+		auto fCenter = f.second.center(*this);
+		auto vertIDset = f.second.getVertIDs();
+		auto it = vertIDset.begin();
+		vertices.push_back(m_vertArr.at(*it));
+		vertices.push_back(m_vertArr.at(*(++it)));
+		vertices.push_back(m_vertArr.at(*(++it)));
+		int YZplan = 0;
+		int XYplan = 0;
+		int ZXplan = 0;
+		for (auto& v : vertices)
+		{
+			if (v.getPos_X() < pointX) --YZplan;
+			else ++YZplan;
+
+			if (v.getPos_Y() < pointY) --ZXplan;
+			else ++ZXplan;
+
+			if (v.getPos_Z() < pointZ) --XYplan;
+			else ++XYplan;
+		}
+		vertices.clear();
+		// is this face intersects with the YZ plan at position pointX
+		if (std::abs(YZplan) == 1)
+		{
+			if (fCenter.at(Y) > pointY) // in front of `point` 
+			{
+				auto it = m_faceArr.find(posYface);
+				if (it == m_faceArr.end())
+					posYface = f.first;
+				else
+					if (fCenter.at(Y) < it->second.center(*this).at(Y))
+						posYface = f.first;
+			}
+			else // at back of `point`
+			{
+				auto it = m_faceArr.find(negYface);
+				if (it == m_faceArr.end())
+					negYface = f.first;
+				else
+					if (fCenter.at(Y) > it->second.center(*this).at(Y))
+						negYface = f.first;
+			}
+
+			if (fCenter.at(Z) > pointZ) // on top of `point`
+			{
+				auto it = m_faceArr.find(posZface);
+				if (it == m_faceArr.end())
+					posZface = f.first;
+				else
+					if (fCenter.at(Z) < it->second.center(*this).at(Z))
+						posZface = f.first;
+			}
+			else // at bottom of `point`
+			{
+				auto it = m_faceArr.find(negZface);
+				if (it == m_faceArr.end())
+					negZface = f.first;
+				else
+					if (fCenter.at(Z) > it->second.center(*this).at(Z))
+						negZface = f.first;
+			}
+		}
+		// is this face intersects with the ZX plan at position pointY
+		if (std::abs(ZXplan) == 1)
+		{
+			if (fCenter.at(X) > pointX) // to the right of `point` 
+			{
+				auto it = m_faceArr.find(posXface);
+				if (it == m_faceArr.end())
+					posXface = f.first;
+				else
+					if (fCenter.at(X) < it->second.center(*this).at(X))
+						posXface = f.first;
+			}
+			else // to the left of `point`
+			{
+				auto it = m_faceArr.find(negXface);
+				if (it == m_faceArr.end())
+					negXface = f.first;
+				else
+					if (fCenter.at(X) > it->second.center(*this).at(X))
+						negXface = f.first;
+			}
+
+			if (fCenter.at(Z) > pointZ) // on top of `point`
+			{
+				auto it = m_faceArr.find(posZface);
+				if (it == m_faceArr.end())
+					posZface = f.first;
+				else
+					if (fCenter.at(Z) < it->second.center(*this).at(Z))
+						posZface = f.first;
+			}
+			else // in bottom of `point`
+			{
+				auto it = m_faceArr.find(negZface);
+				if (it == m_faceArr.end())
+					negZface = f.first;
+				else
+					if (fCenter.at(Z) > it->second.center(*this).at(Z))
+						negZface = f.first;
+			}
+		}
+		// is this face intersects with the XY plan at position pointZ
+		if (std::abs(XYplan) == 1)
+		{
+			if (fCenter.at(Y) > pointY) // in front of `point` 
+			{
+				auto it = m_faceArr.find(posYface);
+				if (it == m_faceArr.end())
+					posYface = f.first;
+				else
+					if (fCenter.at(Y) < it->second.center(*this).at(Y))
+						posYface = f.first;
+			}
+			else // back of `point`
+			{
+				auto it = m_faceArr.find(negYface);
+				if (it == m_faceArr.end())
+					negYface = f.first;
+				else
+					if (fCenter.at(Y) > it->second.center(*this).at(Y))
+						negYface = f.first;
+			}
+
+			if (fCenter.at(X) > pointX) // on top of `point`
+			{
+				auto it = m_faceArr.find(posXface);
+				if (it == m_faceArr.end())
+					posXface = f.first;
+				else
+					if (fCenter.at(X) < it->second.center(*this).at(X))
+						posXface = f.first;
+			}
+			else // in bottom of `point`
+			{
+				auto it = m_faceArr.find(negXface);
+				if (it == m_faceArr.end())
+					negXface = f.first;
+				else
+					if (fCenter.at(X) > it->second.center(*this).at(X))
+						negXface = f.first;
+			}
+		}
+	}
+	/*
+	 *after gathering the six closest faces to the `point` of interest
+	 * we check if the normal of this faces points toward the point to convey "outsideness"
+	 * or pointing away of it to convey "insideness"
+	 * using the vector dot product: if negative result => pointing toward the point, else away of the point
+	 */
+	// early test: if one of the six faces is missing then Point is outside the Mesh
+	if(negXface * posXface * negYface * posYface * negZface * posZface == 0)
+		return false;
+	std::vector<Face> sixFaces;
+	sixFaces.push_back(m_faceArr.at(negXface));
+	sixFaces.push_back(m_faceArr.at(posXface));
+	sixFaces.push_back(m_faceArr.at(negYface));
+	sixFaces.push_back(m_faceArr.at(posYface));
+	sixFaces.push_back(m_faceArr.at(negZface));
+	sixFaces.push_back(m_faceArr.at(posZface));
+	for (auto& face : sixFaces)
+	{
+		pos3D<T> toPointVec{ face.center(*this).at(X) - point.at(X), face.center(*this).at(Y) - point.at(Y), 
+			face.center(*this).at(Z) - point.at(Z) };
+		auto dotProd = toPointVec.at(X) * face.normal(*this).at(X) + toPointVec.at(Y) * face.normal(*this).at(Y) +
+			toPointVec.at(Z) * face.normal(*this).at(Z);
+		if (dotProd < 0)
+			return false;
+	}
+	return true;
 }
 
 template<typename T>
